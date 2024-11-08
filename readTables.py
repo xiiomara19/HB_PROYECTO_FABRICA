@@ -21,14 +21,20 @@ def getMatrizILUO():
 ######### Prioridades #########
 
 def getMatrizPrioridades():
-    # Leer la hoja "ILUO" del archivo de Excel, especificando las columnas y filas necesarias
+    # Leer la hoja "Prioridades" del archivo de Excel, especificando las columnas y filas necesarias
     df_Prioridades = pd.read_excel(archivo, sheet_name='Prioridades', usecols="B:U", skiprows= 0, nrows=79)
 
     # Convertir todos los valores a integer
     df_Prioridades = df_Prioridades.fillna(0).astype(int)
 
     # Convertir el DataFrame en una matriz (lista de listas)
-    return df_Prioridades.values.tolist()
+    matriz = df_Prioridades.values.tolist()
+
+    # Reemplazar los valores 0 a 3, para que la función objetivo no cree indeterminados
+    for linea_index in range(len(matriz)):
+        matriz[linea_index] = [3 if x == 0 else x for x in matriz[linea_index]]
+
+    return matriz
 
 
 ######### Maq_Prio #########
