@@ -56,6 +56,5 @@ readTables.printTablesInfo(array_id_trabajadores, cantidad_trabajadores, array_p
 possibleSolution = [1 for i in range(cantidad_puestos)] + [0 for i in range(cantidad_trabajadores - cantidad_puestos)]
 
 # Ejemplo de uso con datos ficticios
-# Suponiendo que array_Maq_Prio, matriz_Prioridades, possibleSolution, y cantidad_puestos están definidos en el entorno.
 puntuacion = funcionObjetivo()
 print("Puntuación total:", puntuacion)
