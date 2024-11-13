@@ -1,5 +1,21 @@
 import readTables
 
+#############CREAR UN PRIMER RESULTADO LOCAL #######################
+def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores):
+
+    # Crear una lista de valores de -1 (inicialmente para todos los trabajadores)
+    posibles_soluciones = [-1] * cantidad_trabajadores  # Suponiendo que hay 79 trabajadores en total (0 a 78)
+
+    trabajadores_equipo_usuario = trabajadores_por_equipo[equipo_usuario]
+
+    for index, id_trabajador in enumerate(array_id_trabajadores):
+        if id_trabajador in trabajadores_equipo_usuario:
+            posibles_soluciones[index] = 1
+
+    return posibles_soluciones
+
+
+
 ######### FUNCIÓN OBJETIVO #########
 
 def funcionObjetivo(possibleSolution):
@@ -101,6 +117,26 @@ print("Possible solutuion 3: ", possibleSolution3)
 # Ejemplo de uso con datos ficticios
 puntuacion = funcionObjetivo(possibleSolution3)
 print("Puntuación total:", puntuacion)
+
+
+# Caso preguntando qué equipo viene a trabajar, asignandoles -1 al resto de valores:
+# si el el array[0] = 1 significa que el trabajador 0 (id = 13512) trabaja en el puesto numero 1 (AB1 Ayte)
+
+# Solicitar al usuario el equipo al que pertenece su equipo con control de errores
+intentos = 0
+while intentos < 4:
+    equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+    # Verificar si el equipo ingresado es válido
+    if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
+        # Obtener los valores asignados por el equipo
+        possibleSolution4 = asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
+        # Mostrar el resultado
+        print(possibleSolution4)
+        #Salir del while
+        break
+    else:
+        print("Error: Entrada inválida. Por favor, ingrese uno de los equipos válidos: A, B, C, D, E.")
+        intentos += 1
 
 
 
