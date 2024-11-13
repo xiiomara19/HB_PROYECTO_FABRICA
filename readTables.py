@@ -47,6 +47,20 @@ def getTrabajadoresPorEquipo(archivo):
 
     return trabajadores_por_equipo
 
+#############CREAR UN PRIMER RESULTADO LOCAL #######################
+def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores):
+
+    # Crear una lista de valores de -1 (inicialmente para todos los trabajadores)
+    array_trabajadores_disponibles = [False] * cantidad_trabajadores 
+
+    trabajadores_equipo_usuario = trabajadores_por_equipo[equipo_usuario]
+
+    for index, id_trabajador in enumerate(array_id_trabajadores):
+        if id_trabajador in trabajadores_equipo_usuario:
+            array_trabajadores_disponibles[index] = True
+
+    return array_trabajadores_disponibles
+
 
 ######### IDs DE TRABAJADORES #########
 

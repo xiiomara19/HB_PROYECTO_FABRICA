@@ -1,20 +1,5 @@
 import readTables
 
-#############CREAR UN PRIMER RESULTADO LOCAL #######################
-def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores):
-
-    # Crear una lista de valores de -1 (inicialmente para todos los trabajadores)
-    posibles_soluciones = [-1] * cantidad_trabajadores  # Suponiendo que hay 79 trabajadores en total (0 a 78)
-
-    trabajadores_equipo_usuario = trabajadores_por_equipo[equipo_usuario]
-
-    for index, id_trabajador in enumerate(array_id_trabajadores):
-        if id_trabajador in trabajadores_equipo_usuario:
-            posibles_soluciones[index] = 1
-
-    return posibles_soluciones
-
-
 
 ######### FUNCIÓN OBJETIVO #########
 
@@ -129,9 +114,9 @@ while intentos < 4:
     # Verificar si el equipo ingresado es válido
     if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
         # Obtener los valores asignados por el equipo
-        possibleSolution4 = asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
+        array_trabajadores_disponibles = readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
         # Mostrar el resultado
-        print(possibleSolution4)
+        print(array_trabajadores_disponibles)
         #Salir del while
         break
     else:
