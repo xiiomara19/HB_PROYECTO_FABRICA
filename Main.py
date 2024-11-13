@@ -49,10 +49,10 @@ def funcionObjetivo(possibleSolution):
 archivo = 'DATOS turnos HB compartir.xlsm'
 
 # Leer el excel y asígnarlo a variables globales
-(array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
+(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
 
 #Imprimir las variables globales para confirmar que no ha habido ningún problema
-readTables.printTablesInfo(array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) 
+readTables.printTablesInfo(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) 
 
 # Coger en orden los trabajadores hasta llenar todos los puestos:
 # si el el array[0] = 1 significa que el trabajador 0 (id = 13512) trabaja en el puesto numero 1 (AB1 Ayte)
@@ -61,9 +61,6 @@ print("Possible solutuion 1: ", possibleSolution1)
 # Ejemplo de uso con datos ficticios
 puntuacion = funcionObjetivo(possibleSolution1)
 print("Puntuación total:", puntuacion)
-
-
-
 
 
 # CASO REAL ASGINACIONES EXCEL:
