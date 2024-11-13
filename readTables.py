@@ -24,7 +24,7 @@ def getIdTrabajadores(archivo):
     Extrae los IDs de trabajadores desde la columna B de la hoja "ILUO" del archivo.
     """
     # Leer solo la columna B de la hoja "ILUO"
-    df_id_trabajadores = pd.read_excel(archivo, sheet_name='ILUO', usecols="B", skiprows= 0, nrows=79)
+    df_id_trabajadores = pd.read_excel(archivo, sheet_name='ILUO', usecols="B")
 
     # Convertir todos los valores a integer
     df_id_trabajadores = df_id_trabajadores.fillna(0).astype(int)
@@ -53,7 +53,7 @@ def getMatrizILUO(archivo):
     Obtiene la matriz ILUO (trabajadores y puestos) desde la hoja "ILUO" en las columnas C a R.
     """
     # Leer la hoja "ILUO" del archivo de Excel, especificando las columnas y filas necesarias
-    df_ILUO = pd.read_excel(archivo, sheet_name='ILUO', usecols="C:R", skiprows= 0, nrows=79)
+    df_ILUO = pd.read_excel(archivo, sheet_name='ILUO', usecols="C:R")
 
     # Convertir todos los valores a integer
     df_ILUO = df_ILUO.fillna(0).astype(int)
@@ -69,7 +69,7 @@ def getMatrizPrioridades(archivo):
     Lee la matriz de prioridades desde la hoja "Prioridades", ajustando los valores cero a tres.
     """
     # Leer la hoja "Prioridades" del archivo de Excel, especificando las columnas y filas necesarias
-    df_Prioridades = pd.read_excel(archivo, sheet_name='Prioridades', usecols="B:Q", nrows=79)
+    df_Prioridades = pd.read_excel(archivo, sheet_name='Prioridades', usecols="B:Q")
 
     # Convertir todos los valores a integer
     df_Prioridades = df_Prioridades.fillna(0).astype(int)

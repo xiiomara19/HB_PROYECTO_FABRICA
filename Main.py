@@ -19,16 +19,16 @@ def funcionObjetivo():
         for index_trab in range(cantidad_trabajadores):
             # si el trabajador actual está en el puesto i, entonces nos guardamos el id del trabajador
             if i == possibleSolution[index_trab]:
-                trabajadores_en_puesto_i.append(possibleSolution[index_trab]) 
+                trabajadores_en_puesto_i.append(index_trab) 
 
         # Si hay algún trabajador asignado en los puestos de esta máquina, la consideramos operativa
         if any(trabajadores_en_puesto_i):  
             suma_prioridad_trabajadores = 0
 
             # Para cada trabajador (j representa el trabajadores dentro del puesto i)
-            for j, id_trabajador_asignado_en_i in enumerate(trabajadores_en_puesto_i):
-                
-                prioridad_trabajador = matriz_Prioridades[i][j]
+            for index_trab_de_i in trabajadores_en_puesto_i:
+                                
+                prioridad_trabajador = matriz_Prioridades[i][index_trab_de_i]
 
                 # Añadir a la puntuación de la máquina con el inverso de las prioridades
                 suma_prioridad_trabajadores += 1 / prioridad_trabajador
@@ -53,7 +53,8 @@ readTables.printTablesInfo(array_id_trabajadores, cantidad_trabajadores, array_p
 
 # Coger en orden los trabajadores hasta llenar todos los puestos:
 # si el el array[0] = 1 significa que el trabajador 0 (id = 13512) trabaja en el puesto numero 1 (AB1 Ayte)
-possibleSolution = [1 for i in range(cantidad_puestos)] + [0 for i in range(cantidad_trabajadores - cantidad_puestos)]
+possibleSolution = [i for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
+print("Possible solutuion: ", possibleSolution)
 
 # Ejemplo de uso con datos ficticios
 puntuacion = funcionObjetivo()
