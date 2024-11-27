@@ -17,13 +17,10 @@ def main_program():
         # Verificar si el equipo ingresado es válido
         if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
             # Obtener los valores asignados por el equipo
-            print("Equipo seleccionado: ", equipo_usuario)
             array_trabajadores_disponibles = readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
         
             # Mostrar el resultado
-            print("Trabajadores disponibles: ")
             print(array_trabajadores_disponibles)
-            print("Terminado")
             #Salir del while
             break
         else:
