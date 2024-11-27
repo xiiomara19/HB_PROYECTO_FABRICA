@@ -6,6 +6,7 @@ import itertools as iter
 archivo = 'DATOS turnos HB compartir.xlsm'
 
 # Leer el excel y asígnarlo a variables globales
+# Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
 (trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
 
 
