@@ -151,6 +151,18 @@ def calcularVecinosInsert(vectorIni):
     #devuelve una lista con los vecinos, sin repeticiones
     return vecinosInsert
 
+def valores(lista1, lista2):
+    resultado = []
+    # Crear una copia de lista1 para manejar las ocurrencias
+    copia_lista1 = lista1.copy()
+    
+    for elemento in lista2:
+        while elemento in copia_lista1:  # Mientras haya ocurrencias en copia_lista1
+            resultado.append(elemento)
+            copia_lista1.remove(elemento)  # Remueve una ocurrencia por vez
+    
+    return resultado
+
 def generarVecinos(solucion, puestos_no_fijos_activos):
     """
     Genera los vecinos de la solución.
@@ -161,12 +173,15 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
     lista_vecinos=[]
     subvecinos=set()
     plantilla = solucion.copy()
+
+    no_fijos = valores(solucion,puestos_no_fijos_activos)
+
     #creamos una lista con los trabajadores en los puestos fijos,
     #los puestos que podamos ir cambiando tendran valor inf
-    plantilla = [float('inf') if elemento in puestos_no_fijos_activos else elemento for elemento in solucion]
+    plantilla = [float('inf') if elemento in no_fijos else elemento for elemento in solucion]
     
     #generar todas las asignaciones posibles 
-    subvecinos=calcularVecinosInsert(puestos_no_fijos_activos)
+    subvecinos=calcularVecinosInsert(no_fijos)
 
     for elem in subvecinos:
         elem_iter = iter(elem)
