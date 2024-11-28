@@ -1,5 +1,5 @@
 import readTables
-import itertools as iter
+import itertools
 
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
@@ -118,7 +118,7 @@ def funcionObjetivo(possibleSolution):
 
 
 ######### INSERT CON POSICIONES FIJAS #########
-def InsertVector(V, i, j):
+def insertVector(V, i, j):
     #inserts hacia la derecha
     if i<=j:
         lag = V[i]
@@ -141,7 +141,7 @@ def calcularVecinosInsert(vectorIni):
         #inserts derecha
         for j in range(i+1, N):
             vector = vectorIni.copy()
-            vectLag = InsertVector(vector,i,j)
+            vectLag = insertVector(vector,i,j)
             #es necesario que sea tupla para que sea hashable 
             # => para poder hacer el return con "vecino in vecinoInsert"
             vecinosInsert.add(tuple(vectLag))
@@ -149,7 +149,7 @@ def calcularVecinosInsert(vectorIni):
         #inserts izquierda
         for j in range(0, i-1):
             vector = vectorIni.copy()
-            vectLag = InsertVector(vector,i,j)
+            vectLag = insertVector(vector,i,j)
             vecinosInsert.add(tuple(vectLag))
 
     #como los valores de la lista son los puestos de trabajo y mas de un 
@@ -158,6 +158,18 @@ def calcularVecinosInsert(vectorIni):
 
     #devuelve una lista con los vecinos, sin repeticiones
     return vecinosInsert
+
+def valores(lista1, lista2):
+    resultado = []
+    # Crear una copia de lista1 para manejar las ocurrencias
+    copia_lista1 = lista1.copy()
+    
+    for elemento in lista2:
+        while elemento in copia_lista1:  # Mientras haya ocurrencias en copia_lista1
+            resultado.append(elemento)
+            copia_lista1.remove(elemento)  # Remueve una ocurrencia por vez
+    
+    return resultado
 
 def generarVecinos(solucion, puestos_no_fijos_activos):
     """
@@ -169,12 +181,15 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
     lista_vecinos=[]
     subvecinos=set()
     plantilla = solucion.copy()
+
+    no_fijos = valores(solucion,puestos_no_fijos_activos)
+
     #creamos una lista con los trabajadores en los puestos fijos,
     #los puestos que podamos ir cambiando tendran valor inf
-    plantilla = [float('inf') if elemento in puestos_no_fijos_activos else elemento for elemento in solucion]
+    plantilla = [float('inf') if elemento in no_fijos else elemento for elemento in solucion]
     
     #generar todas las asignaciones posibles 
-    subvecinos=calcularVecinosInsert(puestos_no_fijos_activos)
+    subvecinos=calcularVecinosInsert(no_fijos)
 
     for elem in subvecinos:
         elem_iter = iter(elem)
@@ -191,13 +206,51 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
 
 
 ######### HILL CLIMBING #########
-def hillClimbing(array_trabajadores_disponibles):
+def greedyHillClimbing(array_trabajadores_disponibles):
     #Solución inicial
-    initialSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestGlobalSolution = bestLocalSolution
+    print("Solución inicial:", bestLocalSolution)
 
     #Calcular la puntuación de la solución inicial
-    initialScore = funcionObjetivo(initialSolution)
-    print("Puntuación inicial:", initialScore)
+    bestLocalValue = funcionObjetivo(bestLocalSolution)
+    bestGlobalValue = bestLocalValue
+    print("Puntuación inicial:", bestLocalValue)
+    finalizado = False
+    iteracion = 0
+
+    while not finalizado:
+        for i in bestLocalSolution:
+            print("Iteración:", iteracion)
+            #Generar los vecinos de la solución actual
+            vecinos = generarVecinos(bestLocalSolution, array_trabajadores_disponibles)
+
+
+            #Calcular la puntuación de los vecinos
+            puntuaciones_vecinos = []
+            for vecino in vecinos:
+                puntuaciones_vecinos.append(funcionObjetivo(vecino))
+
+            #Encontrar la mejor solución entre los vecinos
+            bestValue = max(puntuaciones_vecinos)
+            bestLocalSolution = vecinos[puntuaciones_vecinos.index(bestLocalValue)]
+        
+            iteracion += 1
+
+            if bestLocalValue > bestGlobalValue:
+                print("Local mejor que global")
+                bestGlobalValue = bestLocalValue
+                bestGlobalSolution = bestLocalSolution
+            
+            else:
+                print("La mejor solución encontrada es:", bestGlobalSolution)
+                print("Puntuación de la mejor solución:", bestGlobalValue)
+                finalizado = True
+                break
+
+        return bestGlobalSolution
+
+
 
 def hillClimbing2(possibleSolution, puestos_no_fijos_activos):
     """

@@ -1,17 +1,24 @@
 import main
 
-def main_program():
+def main_program(equipo_usuario):
+    # Obtener los valores asignados por el equipo
+    array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+    # Mostrar el resultado
+    print(array_trabajadores_disponibles)
+
+    #Hill Climbing
+    solution = main.greedyHillClimbing(array_trabajadores_disponibles)
+    print("La mejor distribución de trabajadores del equipo ", equipo_usuario, " sería:\n", solution)
+
+
+if __name__ == "__main__":
     # Solicitar al usuario el equipo al que pertenece su equipo con control de errores
     intentos = 0
     while intentos < 4:
         equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
         # Verificar si el equipo ingresado es válido
         if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
-            # Obtener los valores asignados por el equipo
-            array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
-        
-            # Mostrar el resultado
-            print(array_trabajadores_disponibles)
+            main_program(equipo_usuario)
             #Salir del while
             break
         else:
@@ -20,6 +27,3 @@ def main_program():
 
     if intentos == 4:
         print("Ha superado el número de intentos fallidos. Vuelva a intentarlo más tarde.")
-
-if __name__ == "__main__":
-    main_program()
