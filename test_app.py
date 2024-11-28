@@ -105,6 +105,6 @@ def main_program(numprueba):
 
 if __name__ == "__main__":
     print("¿Qué pruebas de que función quieres ejecutar?")
-    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n3. Pruebas insert"))
+    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n"))
     main_program(numprueba)
 
