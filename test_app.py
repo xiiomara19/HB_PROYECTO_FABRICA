@@ -82,15 +82,13 @@ def main_program(numprueba):
 
         # Filtrar los trabajadores disponibles según el equipo especificado.
         # Esta función asigna -1 a los trabajadores que no pertenecen al equipo seleccionado.
-        array_trabajadores_disponibles = readTables.asignar_valores_por_equipo(
-            trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores
-        )
+        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
         # Crear una posible solución inicial: se asignan los primeros puestos a trabajadores en orden, 
         # y los trabajadores restantes se dejan sin asignar (-1).
         possibleSolution = [-1 for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
         print("Possible initial solution: ", possibleSolution)
 
-        possibleSolution2 = main.repartoTrabajadoresExperimentados(possibleSolution, cantidad_trabajadores, cantidad_puestos, array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO)
+        possibleSolution2 = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
         print("Possible solution after workers with experience: ", possibleSolution2)
 
 if __name__ == "__main__":

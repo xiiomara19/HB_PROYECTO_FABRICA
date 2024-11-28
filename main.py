@@ -59,7 +59,10 @@ def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimien
     #Devolver la lista actualizada
     return possibleSolution
 
-def repartoTrabajadoresExperimentados(possibleSolution, cantidad_trabajadores, cantidad_puestos,array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO):
+def repartoTrabajadoresExperimentados(array_trabajadores_disponibles):
+    # Crear una posible solución inicial: se asignan los primeros puestos a trabajadores en orden, 
+    # y los trabajadores restantes se dejan sin asignar (-1).
+    possibleSolution = [-1 for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
     for prio in range(1, 10):  # Itera de 1 a 9 --> Prioridades de Prio_Maq
         for cono in range(4, 0, -1):  # Itera de 4 a 1 --> Conocimientos de ILUO
             possibleSolutionNew = repartoTrabajadoresExperimentadosPrioridadConocimiento(prio, cono, possibleSolution, cantidad_trabajadores, cantidad_puestos, array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO)
@@ -188,7 +191,15 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
 
 
 ######### HILL CLIMBING #########
-def hillClimbing(possibleSolution, puestos_no_fijos_activos):
+def hillClimbing(array_trabajadores_disponibles):
+    #Solución inicial
+    initialSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+
+    #Calcular la puntuación de la solución inicial
+    initialScore = funcionObjetivo(initialSolution)
+    print("Puntuación inicial:", initialScore)
+
+def hillClimbing2(possibleSolution, puestos_no_fijos_activos):
     """
     Implementa el algoritmo Hill Climbing para encontrar la mejor solución.
     """
@@ -217,5 +228,7 @@ def hillClimbing(possibleSolution, puestos_no_fijos_activos):
         print("La solución inicial es la mejor encontrada.")
 
     return possibleSolution
+
+
 
 
