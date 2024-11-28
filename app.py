@@ -1,14 +1,4 @@
-import readTables
 import main
-
-######### DATOS INICIALES #########
-# Ruta del archivo de Excel
-archivo = 'DATOS turnos HB compartir.xlsm'
-
-# Leer el excel y asígnarlo a variables globales
-# Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
-(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
-
 
 def main_program():
     # Solicitar al usuario el equipo al que pertenece su equipo con control de errores
@@ -18,7 +8,7 @@ def main_program():
         # Verificar si el equipo ingresado es válido
         if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
             # Obtener los valores asignados por el equipo
-            array_trabajadores_disponibles = readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
+            array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
         
             # Mostrar el resultado
             print(array_trabajadores_disponibles)

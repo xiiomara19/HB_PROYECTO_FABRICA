@@ -67,6 +67,11 @@ def repartoTrabajadoresExperimentados(possibleSolution, cantidad_trabajadores, c
     return possibleSolutionNew
 
 
+######### ASIGNACIÓN VALORES POR EQUIPO #########
+def asignar_valores_por_equipo(equipo_usuario):
+    return readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
+
+
 ######### FUNCIÓN OBJETIVO #########
 def funcionObjetivo(possibleSolution):
     """
@@ -183,6 +188,34 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
 
 
 ######### HILL CLIMBING #########
+def hillClimbing(possibleSolution, puestos_no_fijos_activos):
+    """
+    Implementa el algoritmo Hill Climbing para encontrar la mejor solución.
+    """
+    # Calcular la puntuación de la solución inicial
+    puntuacion_inicial = funcionObjetivo(possibleSolution)
+    print("Puntuación inicial:", puntuacion_inicial)
 
+    # Generar los vecinos de la solución inicial
+    vecinos = generarVecinos(possibleSolution, puestos_no_fijos_activos)
+
+    # Calcular la puntuación de los vecinos
+    puntuaciones_vecinos = []
+    for vecino in vecinos:
+        puntuaciones_vecinos.append(funcionObjetivo(vecino))
+
+    # Encontrar la mejor solución entre los vecinos
+    mejor_puntuacion = max(puntuaciones_vecinos)
+    mejor_solucion = vecinos[puntuaciones_vecinos.index(mejor_puntuacion)]
+
+    # Si la mejor solución es mejor que la inicial, actualizar la solución
+    if mejor_puntuacion > puntuacion_inicial:
+        possibleSolution = mejor_solucion
+        print("Mejor solución encontrada:", possibleSolution)
+        print("Puntuación de la mejor solución:", mejor_puntuacion)
+    else:
+        print("La solución inicial es la mejor encontrada.")
+
+    return possibleSolution
 
 
