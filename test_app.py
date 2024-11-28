@@ -91,8 +91,20 @@ def main_program(numprueba):
         possibleSolution2 = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
         print("Possible solution after workers with experience: ", possibleSolution2)
 
+    elif numprueba == 4:
+        """PRUEBAS INSERT"""
+        print("---------------------------------------PRUEBAS INSERT---------------------------------------")
+        print(main.generarVecinos([1,2,3,4], [3,2,1]))
+        #respuestas esperadas: [2,1,3,4], [2,3,1,4] [1,3,2,4] [3,1,2,4]
+        print(main.generarVecinos([6,1,2,5,6,7], [5,2,7]))
+        #respuestas esperadas: [6,1,2,5,6,7], [6,1,2,7,6,5], [6,1,5,7,6,2], [6,1,7,5,6,2]
+        print(main.generarVecinos([6,1,2,5,6,2], [5,2]))
+        #respuestas esperadas: [6,1,2,2,6,5], [6,1,5,2,6,2], [6,1,2,5,6,2]
+
+        #print(valores([1,2,2,3],[2]))
+
 if __name__ == "__main__":
     print("¿Qué pruebas de que función quieres ejecutar?")
-    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n"))
+    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n3. Pruebas insert"))
     main_program(numprueba)
 
