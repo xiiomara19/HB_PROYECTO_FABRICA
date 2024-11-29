@@ -215,15 +215,12 @@ def greedyHillClimbing(array_trabajadores_disponibles):
     #Calcular la puntuación de la solución inicial
     bestLocalValue = funcionObjetivo(bestLocalSolution)
     bestGlobalValue = bestLocalValue
-    print("Puntuación inicial:", bestLocalValue)
+    print("Puntuación de la solución inicial:", round(bestLocalValue, 2))
 
     finalizado = False
-    iteracion = 0
 
-    while not finalizado:
-        print("Finalizado:", finalizado)    
+    while not finalizado:  
         for i in bestLocalSolution:
-            print("Iteración:", iteracion)
             #Generar los vecinos de la solución actual
             vecinos = generarVecinos(bestLocalSolution)
 
@@ -235,19 +232,15 @@ def greedyHillClimbing(array_trabajadores_disponibles):
             #Encontrar la mejor solución entre los vecinos
             bestLocalValue = max(puntuaciones_vecinos)
             bestLocalSolution = vecinos[puntuaciones_vecinos.index(bestLocalValue)]
-        
-            iteracion += 1
 
             if bestLocalValue > bestGlobalValue:
                 bestGlobalValue = bestLocalValue
                 bestGlobalSolution = bestLocalSolution
             
             else:
-                print("La mejor solución encontrada es:", bestGlobalSolution)
-                print("Puntuación de la mejor solución:", round(bestGlobalValue, 2))
                 finalizado = True
                 break
 
         
-    return bestGlobalSolution
+    return bestGlobalSolution, round(bestGlobalValue, 2)
 
