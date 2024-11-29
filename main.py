@@ -158,7 +158,7 @@ def calcularVecinosInsert(vectorIni):
     #devuelve una lista con los vecinos, sin repeticiones
     return vecinosInsert
 
-def valores(lista1, lista2):
+def conseguirPuestosNoFijosActivos(lista1, lista2):
     resultado = []
     # Crear una copia de lista1 para manejar las ocurrencias
     copia_lista1 = lista1.copy()
@@ -170,25 +170,23 @@ def valores(lista1, lista2):
     
     return resultado
 
-def generarVecinos(solucion, puestos_no_fijos_activos):
+def generarVecinos(solucion):
     """
     Genera los vecinos de la solución.
-    El primer parámetro es la solución generada con hill climbing.
-    El segundo parámetro es una lista con los indices de las posiciones que no
-    necesitan un nivel específico (los puestos secundarios de las máquinas que se van a arrancar)
     """
+    puestos_no_fijos=[1,3,5,7,9,11,13,15]
     lista_vecinos=[]
     subvecinos=set()
     plantilla = solucion.copy()
 
-    no_fijos = valores(solucion,puestos_no_fijos_activos)
+    no_fijos_activos = conseguirPuestosNoFijosActivos(solucion,puestos_no_fijos)
 
     #creamos una lista con los trabajadores en los puestos fijos,
     #los puestos que podamos ir cambiando tendran valor inf
-    plantilla = [float('inf') if elemento in no_fijos else elemento for elemento in solucion]
+    plantilla = [float('inf') if elemento in no_fijos_activos else elemento for elemento in solucion]
     
     #generar todas las asignaciones posibles 
-    subvecinos=calcularVecinosInsert(no_fijos)
+    subvecinos=calcularVecinosInsert(no_fijos_activos)
 
     for elem in subvecinos:
         elem_iter = iter(elem)
@@ -203,26 +201,7 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
     
     return lista_vecinos
 
-######### PUESTOS NO FIJOS ACTIVOS  #########
-def puestosNoFijosActivos(array_trabajadores_disponibles, possibleSolution):
-    """
-    Obtenemos los puestos no fijos activos, es decir, los puestos que no son principales ni team lider y que tienen trabajadores asignados.
-    """
-    puestos_no_fijos = [-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1]
-    puestos_no_fijos_activos = []
-    array_trabajadores_turno = []
-    for i, value in enumerate(array_trabajadores_disponibles):
-        if value:
-            array_trabajadores_turno.append(possibleSolution[i])
-            print("Trabajador ", i, " en puesto ", possibleSolution[i], "con un puesto fijo", puestos_no_fijos[possibleSolution[i]])
-            if possibleSolution[i] != -1 & puestos_no_fijos[possibleSolution[i]] != -1:
-                print(possibleSolution[i])
-                puestos_no_fijos_activos.append(possibleSolution[i])
 
-    print("Prioridades de los puestos: ", array_Maq_Prio)
-    print("Trabajadores en turno: ", array_trabajadores_turno)
-    print("Puestos no fijos activos: ", puestos_no_fijos_activos)
-    return puestos_no_fijos_activos
 
 ######### HILL CLIMBING #########
 def greedyHillClimbing(array_trabajadores_disponibles):
@@ -236,8 +215,6 @@ def greedyHillClimbing(array_trabajadores_disponibles):
     bestGlobalValue = bestLocalValue
     print("Puntuación inicial:", bestLocalValue)
 
-    puestos_no_fijos_activos = puestosNoFijosActivos(array_trabajadores_disponibles, bestLocalSolution)
-
     finalizado = False
     iteracion = 0
 
@@ -246,7 +223,7 @@ def greedyHillClimbing(array_trabajadores_disponibles):
         for i in bestLocalSolution:
             print("Iteración:", iteracion)
             #Generar los vecinos de la solución actual
-            vecinos = generarVecinos(bestLocalSolution, puestos_no_fijos_activos)
+            vecinos = generarVecinos(bestLocalSolution)
 
             #Calcular la puntuación de los vecinos
             puntuaciones_vecinos = []
