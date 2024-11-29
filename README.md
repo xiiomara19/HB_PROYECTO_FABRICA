@@ -20,12 +20,13 @@ pip install openpyxl
 ```
 
 ## Ejecución
+Una vez que hayas configurado el entorno e instalado las dependencias necesarias, puedes iniciar la aplicación principal utilizando los siguientes comandos según el sistema operativo que estés utilizando:
 ```shell
 pyhton app.py       # en Windows
 pyhton3 app.py      # en Linux
 ```
 
-## Descripción
+## Descripción problema
 
 Este proyecto tiene como objetivo maximizar el número de máquinas operativas en una fábrica con 20 puestos de trabajo, garantizando que la asignación de trabajadores sea óptima incluso en caso de ausencias. La redistribución se basa en las prioridades de las máquinas, el nivel de conocimiento y las capacidades de los trabajadores.
 
