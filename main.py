@@ -66,7 +66,6 @@ def repartoTrabajadoresExperimentados(array_trabajadores_disponibles):
     for prio in range(1, 10):  # Itera de 1 a 9 --> Prioridades de Prio_Maq
         for cono in range(4, 0, -1):  # Itera de 4 a 1 --> Conocimientos de ILUO
             possibleSolutionNew = repartoTrabajadoresExperimentadosPrioridadConocimiento(prio, cono, possibleSolution, cantidad_trabajadores, cantidad_puestos, array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO)
-            print("Possible solution after workers with experience (priority = ", prio  ,") (ILUO = ", cono, "): ", possibleSolutionNew)
     return possibleSolutionNew
 
 
@@ -204,6 +203,25 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
     
     return lista_vecinos
 
+######### PUESTOS NO FIJOS ACTIVOS  #########
+def puestosNoFijosActivos(array_trabajadores_disponibles, possibleSolution):
+    """
+    Obtenemos los puestos no fijos activos, es decir, los puestos que no son principales ni team lider y que tienen trabajadores asignados.
+    """
+    puestos_no_fijos = [-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, 1, 1, 1]
+    puestos_no_fijos_activos = []
+    array_trabajadores_turno = []
+    for i, value in enumerate(array_trabajadores_disponibles):
+        if value:
+            array_trabajadores_turno.append(possibleSolution[i])
+            print("Trabajador ", i, " en puesto ", possibleSolution[i], "con maquina de prioridad", array_Maq_Prio[possibleSolution[i]])
+            if possibleSolution[i] != -1 & array_Maq_Prio[possibleSolution[i]] != 1:
+                puestos_no_fijos_activos.append(possibleSolution[i])
+
+    print("Prioridades de los puestos: ", array_Maq_Prio)
+    print("Trabajadores en turno: ", array_trabajadores_turno)
+    print("Puestos no fijos activos: ", puestos_no_fijos_activos)
+    return puestos_no_fijos_activos
 
 ######### HILL CLIMBING #########
 def greedyHillClimbing(array_trabajadores_disponibles):
@@ -216,15 +234,18 @@ def greedyHillClimbing(array_trabajadores_disponibles):
     bestLocalValue = funcionObjetivo(bestLocalSolution)
     bestGlobalValue = bestLocalValue
     print("Puntuación inicial:", bestLocalValue)
+
+    puestos_no_fijos_activos = puestosNoFijosActivos(array_trabajadores_disponibles, bestLocalSolution)
+
     finalizado = False
     iteracion = 0
 
     while not finalizado:
+        print("Finalizado:", finalizado)    
         for i in bestLocalSolution:
             print("Iteración:", iteracion)
             #Generar los vecinos de la solución actual
-            vecinos = generarVecinos(bestLocalSolution, array_trabajadores_disponibles)
-
+            vecinos = generarVecinos(bestLocalSolution, puestos_no_fijos_activos)
 
             #Calcular la puntuación de los vecinos
             puntuaciones_vecinos = []
@@ -232,56 +253,21 @@ def greedyHillClimbing(array_trabajadores_disponibles):
                 puntuaciones_vecinos.append(funcionObjetivo(vecino))
 
             #Encontrar la mejor solución entre los vecinos
-            bestValue = max(puntuaciones_vecinos)
+            bestLocalValue = max(puntuaciones_vecinos)
             bestLocalSolution = vecinos[puntuaciones_vecinos.index(bestLocalValue)]
         
             iteracion += 1
 
             if bestLocalValue > bestGlobalValue:
-                print("Local mejor que global")
                 bestGlobalValue = bestLocalValue
                 bestGlobalSolution = bestLocalSolution
             
             else:
                 print("La mejor solución encontrada es:", bestGlobalSolution)
-                print("Puntuación de la mejor solución:", bestGlobalValue)
+                print("Puntuación de la mejor solución:", round(bestGlobalValue, 2))
                 finalizado = True
                 break
 
-        return bestGlobalSolution
-
-
-
-def hillClimbing2(possibleSolution, puestos_no_fijos_activos):
-    """
-    Implementa el algoritmo Hill Climbing para encontrar la mejor solución.
-    """
-    # Calcular la puntuación de la solución inicial
-    puntuacion_inicial = funcionObjetivo(possibleSolution)
-    print("Puntuación inicial:", puntuacion_inicial)
-
-    # Generar los vecinos de la solución inicial
-    vecinos = generarVecinos(possibleSolution, puestos_no_fijos_activos)
-
-    # Calcular la puntuación de los vecinos
-    puntuaciones_vecinos = []
-    for vecino in vecinos:
-        puntuaciones_vecinos.append(funcionObjetivo(vecino))
-
-    # Encontrar la mejor solución entre los vecinos
-    mejor_puntuacion = max(puntuaciones_vecinos)
-    mejor_solucion = vecinos[puntuaciones_vecinos.index(mejor_puntuacion)]
-
-    # Si la mejor solución es mejor que la inicial, actualizar la solución
-    if mejor_puntuacion > puntuacion_inicial:
-        possibleSolution = mejor_solucion
-        print("Mejor solución encontrada:", possibleSolution)
-        print("Puntuación de la mejor solución:", mejor_puntuacion)
-    else:
-        print("La solución inicial es la mejor encontrada.")
-
-    return possibleSolution
-
-
-
+        
+    return bestGlobalSolution
 
