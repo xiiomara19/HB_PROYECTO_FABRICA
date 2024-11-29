@@ -84,7 +84,6 @@ def funcionObjetivo(possibleSolution):
 
     # Recorremos cada máquina o puesto (i representa la máquina o puesto)
     for i in range(cantidad_puestos):
-        # print("MAQUINA I =", i)
         
         prioridad_maquina_i = array_Maq_Prio[i]
 
@@ -95,14 +94,12 @@ def funcionObjetivo(possibleSolution):
             if i == possibleSolution[index_trab]:
                 trabajadores_en_puesto_i.append(index_trab) 
 
-        # print("trabajadores_en_puesto_i = ", trabajadores_en_puesto_i)
         # Si hay algún trabajador asignado en los puestos de esta máquina, la consideramos operativa
         if any(trabajadores_en_puesto_i):  
             suma_prioridad_trabajadores = 0
 
             # Para cada trabajador (j representa el trabajadores dentro del puesto i)
             for index_trab_de_i in trabajadores_en_puesto_i:
-                # print("index_trab_de_i = ", index_trab_de_i)
                                 
                 prioridad_trabajador = matriz_Prioridades[index_trab_de_i][i]
 
