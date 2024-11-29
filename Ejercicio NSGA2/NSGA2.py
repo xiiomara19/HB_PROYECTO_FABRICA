@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt # Import the math plot for the graph
 import math  # Import the math module
 import random # Para crossover y mutación
+import numpy as np
+
 
 # Ejercicio propuesto - MÍNIMO: 
 # Implementa el NSGA-II o el SPEA - II, pero si haces NSGA-2 no hagas crowd distance.
@@ -30,10 +32,10 @@ def dominates (solution_a, solution_b):
     is_better_in_at_least_one_objective = False
 
     for i in range(len(solution_a)):
-        if solution_a[i] < solution_b[i]:
+        if solution_a[i] > solution_b[i]:
             is_at_least_as_good_in_all_objectives = False
             break
-        if solution_a[i] > solution_b[i]:
+        if solution_a[i] < solution_b[i]:
             is_better_in_at_least_one_objective = True
 
     return is_at_least_as_good_in_all_objectives and is_better_in_at_least_one_objective
@@ -116,12 +118,6 @@ def C2(x1, x2):
     value = (x1 - 0.5)**2 + (x2 - 0.5)**2
     return value <= 0.5
 
-# Range of possible values / Search domain
-def possible_values(x1, x2):
-    value1 = 0 <= x1 <= math.pi  # Check if x1 is in range [0, π]
-    value2 = 0 <= x2 <= math.pi  # Check if x2 is in range [0, π]
-    return value1 and value2
-
 def min_f1(x1,x2): return x1
 def min_f2(x1,x2): return x2
 
@@ -169,38 +165,65 @@ def NSGA2(population_size, num_generations):
 
     generations_data = []  # Store data for each generation to plot later
 
-    # Inicializar una población aleatoria
-    population = [
-        [random.uniform(0, math.pi), random.uniform(0, math.pi)]
-        for _ in range(population_size)
-    ]
-    print("STEP 1: POPULATION = ", population)
+    # Inicializar una población aleatoria válida
+    population = []
+    while len(population) < population_size:
+        val1 = random.uniform(0, math.pi)
+        val2 = random.uniform(0, math.pi)
+        [f1, f2] = evaluate_solution(val1, val2)
+        if f1 != float('inf') and f2 != float('inf'):
+            population.append([val1, val2, f1, f2])
+
+    # print("STEP 1: POPULATION = ", population)
 
     for generation in range(num_generations):
-        print(" ---------------- iteración de generación = ", generation, "----------------")
+        # print(" ---------------- iteración de generación = ", generation, "----------------")
 
         # Evaluar la población
         evaluated_population = [
             ind + evaluate_solution(ind[0], ind[1])
             for ind in population
         ]
-        print("STEP 2: EVALUATED POPULATION = ", evaluated_population)
+        # print("STEP 2: EVALUATED POPULATION = ", evaluated_population)
 
+        # No todas las soluciones son posibles, por eso, borro las NO posibles y añado POSIBLES NUEVAS RANDOM soluciones
+        # --- Filtrar sublistas y contar las eliminadas
+        filtrada = []
+        cont_eliminadas = 0
+
+        for sublista in evaluated_population:
+            if len(sublista) >= 4 and (math.isinf(sublista[2]) or math.isinf(sublista[3])):
+                cont_eliminadas += 1
+            else:
+                filtrada.append(sublista)
+
+        # --- Hay que rellenar la cantidad de soluciones borradas, para ello, creamos nuevas soluciones
+        lista_de_relleno = []
+        while len(lista_de_relleno) < cont_eliminadas:
+            val1 = random.uniform(0, math.pi)
+            val2 = random.uniform(0, math.pi)
+            [f1, f2] = evaluate_solution(val1, val2)
+            if f1 != float('inf') and f2 != float('inf'):
+                lista_de_relleno.append([val1, val2, f1, f2])
+
+        possible_population = filtrada + lista_de_relleno
+        # print("STEP 2.1: EVALUATED AND FEASABLE POPULATION = ", possible_population)
+        
         # Clasificar en frentes de Pareto
-        pareto_front = find_pareto_frontier(evaluated_population)
-        print("STEP 3: PARETO FRONT = ", pareto_front)
+        pareto_front = find_pareto_frontier(possible_population)
+        # print("STEP 3: PARETO FRONT = ", pareto_front)
 
         # Selección usando Distancia Euclidiana
-        # Calcular el centroide del frente
+        # --- Calcular el centroide del frente
         centroid = calculate_centroid(pareto_front)
         
-        # Ordenar soluciones por distancia euclidiana al centroide
+        # --- Ordenar soluciones por distancia euclidiana al centroide
         sorted_front = sorted(pareto_front, key=lambda sol: euclidean_distance(sol, centroid))
-        print("STEP 4: SELECTED SOLUTIONS (sorted by Euclidean Distance) = ", sorted_front)
+        # print("STEP 4: SELECTED SOLUTIONS (sorted by Euclidean Distance) = ", sorted_front)
 
         # Extraer soluciones seleccionadas del frente de Pareto
         population = [ind[:2] for ind in sorted_front]
-        print("STEP 4: NEW POPULATION = ", population)
+        # print("STEP 4: NEW POPULATION = ", population)
 
         # Descendencia (Cruce y Mutación)
         offspring = []
@@ -208,27 +231,26 @@ def NSGA2(population_size, num_generations):
             p1, p2 = random.sample(population, 2)
             child = mutate(crossover(p1, p2))
             offspring.append(child)
-        print("STEP 5: OFFSPRING = ", offspring)
+        # print("STEP 5: OFFSPRING = ", offspring)
 
         # Combinar descendencia con el frente de Pareto para la siguiente generación
         population = population + offspring
         population = population[:population_size]
-        print("STEP 6: POPULATION = ", population)
+        # print("STEP 6: POPULATION = ", population)
 
-        # Visualizar la población
-        # if generation % 10 == 0 or generation == num_generations - 1:
-        #     show_pareto_frontier([[ind[0], ind[1]] for ind in population])
-        # show_pareto_frontier([[ind[0], ind[1]] for ind in population], "Pareto Frontier Scatterplot iteration " + str(generation))
-
-        # Store the Pareto front of this generation for plotting later
-        if generation % 10 == 0 or generation == num_generations - 1:
+        if num_generations > 100:
+            # Store the Pareto front of this generation for plotting later
+            if generation % 10 == 0 or generation == num_generations - 1:
+                generations_data.append([[ind[0], ind[1]] for ind in population])
+        else:
+            # Store the Pareto front of this generation for plotting later
             generations_data.append([[ind[0], ind[1]] for ind in population])
 
     # Visualizar los frentes de Pareto de todas las generaciones
     show_pareto_frontier_all_generations(generations_data)
 
     # Devolver el último frente de Pareto
-    return find_pareto_frontier(evaluated_population)
+    return find_pareto_frontier(possible_population)
 
 
 # # Test find_parteo_frontier
@@ -244,8 +266,8 @@ def NSGA2(population_size, num_generations):
 # show_pareto_frontier(pareto_frontier)
 
 # Test NSGA2
-population_size = 10
-num_generations = 100
+population_size = 200
+num_generations = 200
 pareto_frontier = NSGA2(population_size, num_generations)
-
-
+# print(" PARETO FRONTIER = ", pareto_frontier)
+show_pareto_frontier(pareto_frontier, "PARETO FRONTIER FINAL")
