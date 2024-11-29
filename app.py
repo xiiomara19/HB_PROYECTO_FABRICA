@@ -6,9 +6,9 @@ def main_program(equipo_usuario):
     # Mostrar el resultado
     print(array_trabajadores_disponibles)
 
-    #Hill Climbing
+    # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
     solution = main.greedyHillClimbing(array_trabajadores_disponibles)
-    print("La mejor distribución de trabajadores del equipo ", equipo_usuario, " sería:\n", solution)
+    print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution)
 
 
 if __name__ == "__main__":
