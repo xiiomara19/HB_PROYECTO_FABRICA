@@ -98,19 +98,10 @@ def main_program(numprueba):
         #respuestas esperadas: [6,1,2,2,6,5], [6,1,5,2,6,2], [6,1,2,5,6,2]
 
         #print(valores([1,2,2,3],[2]))
-    
-    elif numprueba == 5:
-        """PRUEBAS PUESTOS NO FIJOS ACTIVOS"""
-        print("---------------------------------------PRUEBAS PUESTOS NO FIJOS ATIVOS---------------------------------------")
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
-        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
-        possibleSolution = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
-        puestos_no_fijos_activos = main.puestosNoFijosActivos(array_trabajadores_disponibles, possibleSolution)
-        print("Puestos no fijos activos: ", puestos_no_fijos_activos)
 
 
 if __name__ == "__main__":
     print("¿Qué pruebas de que función quieres ejecutar?")
-    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n5. Pruebas puestos no fijos activos\n"))
+    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n"))
     main_program(numprueba)
 
