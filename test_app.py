@@ -99,9 +99,19 @@ def main_program(numprueba):
 
         #print(valores([1,2,2,3],[2]))
 
+    elif numprueba == 5:
+        """PRUEBAS HILL CLIMBING"""
+        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+
+        # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
+        solution = main.greedyHillClimbing(array_trabajadores_disponibles)
+        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution)
+
 
 if __name__ == "__main__":
     print("¿Qué pruebas de que función quieres ejecutar?")
-    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n"))
+    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n5. Pruebas Hill Climbing\n"))
     main_program(numprueba)
 
