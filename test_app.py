@@ -83,13 +83,9 @@ def main_program(numprueba):
         # Filtrar los trabajadores disponibles según el equipo especificado.
         # Esta función asigna -1 a los trabajadores que no pertenecen al equipo seleccionado.
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
-        # Crear una posible solución inicial: se asignan los primeros puestos a trabajadores en orden, 
-        # y los trabajadores restantes se dejan sin asignar (-1).
-        possibleSolution = [-1 for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
-        print("Possible initial solution: ", possibleSolution)
 
-        possibleSolution2 = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
-        print("Possible solution after workers with experience: ", possibleSolution2)
+        possibleSolution = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        print("Possible solution after workers with experience: ", possibleSolution)
 
     elif numprueba == 4:
         """PRUEBAS INSERT"""
@@ -102,9 +98,19 @@ def main_program(numprueba):
         #respuestas esperadas: [6,1,2,2,6,5], [6,1,5,2,6,2], [6,1,2,5,6,2]
 
         #print(valores([1,2,2,3],[2]))
+    
+    elif numprueba == 5:
+        """PRUEBAS PUESTOS NO FIJOS ACTIVOS"""
+        print("---------------------------------------PRUEBAS PUESTOS NO FIJOS ATIVOS---------------------------------------")
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+        possibleSolution = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        puestos_no_fijos_activos = main.puestosNoFijosActivos(array_trabajadores_disponibles, possibleSolution)
+        print("Puestos no fijos activos: ", puestos_no_fijos_activos)
+
 
 if __name__ == "__main__":
     print("¿Qué pruebas de que función quieres ejecutar?")
-    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n"))
+    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n5. Pruebas puestos no fijos activos\n"))
     main_program(numprueba)
 
