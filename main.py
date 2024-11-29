@@ -208,14 +208,15 @@ def puestosNoFijosActivos(array_trabajadores_disponibles, possibleSolution):
     """
     Obtenemos los puestos no fijos activos, es decir, los puestos que no son principales ni team lider y que tienen trabajadores asignados.
     """
-    puestos_no_fijos = [-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, 1, 1, 1]
+    puestos_no_fijos = [-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1]
     puestos_no_fijos_activos = []
     array_trabajadores_turno = []
     for i, value in enumerate(array_trabajadores_disponibles):
         if value:
             array_trabajadores_turno.append(possibleSolution[i])
-            print("Trabajador ", i, " en puesto ", possibleSolution[i], "con maquina de prioridad", array_Maq_Prio[possibleSolution[i]])
-            if possibleSolution[i] != -1 & array_Maq_Prio[possibleSolution[i]] != 1:
+            print("Trabajador ", i, " en puesto ", possibleSolution[i], "con un puesto fijo", puestos_no_fijos[possibleSolution[i]])
+            if possibleSolution[i] != -1 & puestos_no_fijos[possibleSolution[i]] != -1:
+                print(possibleSolution[i])
                 puestos_no_fijos_activos.append(possibleSolution[i])
 
     print("Prioridades de los puestos: ", array_Maq_Prio)
