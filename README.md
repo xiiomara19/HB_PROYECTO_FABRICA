@@ -1,6 +1,32 @@
 # HB PROYECTO
 
-## Descripción
+## Instalación
+
+El módulo 'pandas' funciones para extraer y procesar información específica de un archivo de Excel, organizado en varias hojas de datos relacionadas con:
+- Trabajadores.
+- Puestos de trabajo.
+- Matrices de prioridad.
+- Asignaciones de operadores por máquina.
+
+### Requisitos:
+- `pandas`
+- `openpyxl`
+
+### Instalación de dependencias (si es necesario):
+
+```shell
+pip install pandas
+pip install openpyxl
+```
+
+## Ejecución
+Una vez que hayas configurado el entorno e instalado las dependencias necesarias, puedes iniciar la aplicación principal utilizando los siguientes comandos según el sistema operativo que estés utilizando:
+```shell
+pyhton app.py       # en Windows
+pyhton3 app.py      # en Linux
+```
+
+## Descripción problema
 
 Este proyecto tiene como objetivo maximizar el número de máquinas operativas en una fábrica con 20 puestos de trabajo, garantizando que la asignación de trabajadores sea óptima incluso en caso de ausencias. La redistribución se basa en las prioridades de las máquinas, el nivel de conocimiento y las capacidades de los trabajadores.
 

@@ -1,27 +1,24 @@
-import readTables
 import main
 
-######### DATOS INICIALES #########
-# Ruta del archivo de Excel
-archivo = 'DATOS turnos HB compartir.xlsm'
+def main_program(equipo_usuario):
+    # Obtener los valores asignados por el equipo
+    array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+    # Mostrar el resultado
+    print(array_trabajadores_disponibles)
 
-# Leer el excel y asígnarlo a variables globales
-# Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
-(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
+    # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
+    solution = main.greedyHillClimbing(array_trabajadores_disponibles)
+    print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution)
 
 
-def main_program():
+if __name__ == "__main__":
     # Solicitar al usuario el equipo al que pertenece su equipo con control de errores
     intentos = 0
     while intentos < 4:
         equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
         # Verificar si el equipo ingresado es válido
         if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
-            # Obtener los valores asignados por el equipo
-            array_trabajadores_disponibles = readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
-        
-            # Mostrar el resultado
-            print(array_trabajadores_disponibles)
+            main_program(equipo_usuario)
             #Salir del while
             break
         else:
@@ -30,6 +27,3 @@ def main_program():
 
     if intentos == 4:
         print("Ha superado el número de intentos fallidos. Vuelva a intentarlo más tarde.")
-
-if __name__ == "__main__":
-    main_program()

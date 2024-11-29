@@ -1,5 +1,5 @@
 import readTables
-import itertools as iter
+import itertools
 
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
@@ -59,12 +59,19 @@ def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimien
     #Devolver la lista actualizada
     return possibleSolution
 
-def repartoTrabajadoresExperimentados(possibleSolution, cantidad_trabajadores, cantidad_puestos,array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO):
+def repartoTrabajadoresExperimentados(array_trabajadores_disponibles):
+    # Crear una posible solución inicial: se asignan los primeros puestos a trabajadores en orden, 
+    # y los trabajadores restantes se dejan sin asignar (-1).
+    possibleSolution = [-1 for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
     for prio in range(1, 10):  # Itera de 1 a 9 --> Prioridades de Prio_Maq
         for cono in range(4, 0, -1):  # Itera de 4 a 1 --> Conocimientos de ILUO
             possibleSolutionNew = repartoTrabajadoresExperimentadosPrioridadConocimiento(prio, cono, possibleSolution, cantidad_trabajadores, cantidad_puestos, array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO)
-            print("Possible solution after workers with experience (priority = ", prio  ,") (ILUO = ", cono, "): ", possibleSolutionNew)
     return possibleSolutionNew
+
+
+######### ASIGNACIÓN VALORES POR EQUIPO #########
+def asignar_valores_por_equipo(equipo_usuario):
+    return readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
 
 
 ######### FUNCIÓN OBJETIVO #########
@@ -110,7 +117,7 @@ def funcionObjetivo(possibleSolution):
 
 
 ######### INSERT CON POSICIONES FIJAS #########
-def InsertVector(V, i, j):
+def insertVector(V, i, j):
     #inserts hacia la derecha
     if i<=j:
         lag = V[i]
@@ -133,7 +140,7 @@ def calcularVecinosInsert(vectorIni):
         #inserts derecha
         for j in range(i+1, N):
             vector = vectorIni.copy()
-            vectLag = InsertVector(vector,i,j)
+            vectLag = insertVector(vector,i,j)
             #es necesario que sea tupla para que sea hashable 
             # => para poder hacer el return con "vecino in vecinoInsert"
             vecinosInsert.add(tuple(vectLag))
@@ -141,7 +148,7 @@ def calcularVecinosInsert(vectorIni):
         #inserts izquierda
         for j in range(0, i-1):
             vector = vectorIni.copy()
-            vectLag = InsertVector(vector,i,j)
+            vectLag = insertVector(vector,i,j)
             vecinosInsert.add(tuple(vectLag))
 
     #como los valores de la lista son los puestos de trabajo y mas de un 
@@ -151,7 +158,8 @@ def calcularVecinosInsert(vectorIni):
     #devuelve una lista con los vecinos, sin repeticiones
     return vecinosInsert
 
-def valores(lista1, lista2):
+
+def conseguirPuestosNoFijosActivos(lista1, lista2):
     resultado = []
     # Crear una copia de lista1 para manejar las ocurrencias
     copia_lista1 = lista1.copy()
@@ -163,25 +171,24 @@ def valores(lista1, lista2):
     
     return resultado
 
-def generarVecinos(solucion, puestos_no_fijos_activos):
+def generarVecinos(solucion):
+
     """
     Genera los vecinos de la solución.
-    El primer parámetro es la solución generada con hill climbing.
-    El segundo parámetro es una lista con los indices de las posiciones que no
-    necesitan un nivel específico (los puestos secundarios de las máquinas que se van a arrancar)
     """
+    puestos_no_fijos=[1,3,5,7,9,11,13,15]
     lista_vecinos=[]
     subvecinos=set()
     plantilla = solucion.copy()
 
-    no_fijos = valores(solucion,puestos_no_fijos_activos)
+    no_fijos_activos = conseguirPuestosNoFijosActivos(solucion,puestos_no_fijos)
 
     #creamos una lista con los trabajadores en los puestos fijos,
     #los puestos que podamos ir cambiando tendran valor inf
-    plantilla = [float('inf') if elemento in no_fijos else elemento for elemento in solucion]
+    plantilla = [float('inf') if elemento in no_fijos_activos else elemento for elemento in solucion]
     
     #generar todas las asignaciones posibles 
-    subvecinos=calcularVecinosInsert(no_fijos)
+    subvecinos=calcularVecinosInsert(no_fijos_activos)
 
     for elem in subvecinos:
         elem_iter = iter(elem)
@@ -197,7 +204,50 @@ def generarVecinos(solucion, puestos_no_fijos_activos):
     return lista_vecinos
 
 
+
 ######### HILL CLIMBING #########
+def greedyHillClimbing(array_trabajadores_disponibles):
+    #Solución inicial
+    bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestGlobalSolution = bestLocalSolution
+    print("Solución inicial:", bestLocalSolution)
 
+    #Calcular la puntuación de la solución inicial
+    bestLocalValue = funcionObjetivo(bestLocalSolution)
+    bestGlobalValue = bestLocalValue
+    print("Puntuación inicial:", bestLocalValue)
 
+    finalizado = False
+    iteracion = 0
+
+    while not finalizado:
+        print("Finalizado:", finalizado)    
+        for i in bestLocalSolution:
+            print("Iteración:", iteracion)
+            #Generar los vecinos de la solución actual
+            vecinos = generarVecinos(bestLocalSolution)
+
+            #Calcular la puntuación de los vecinos
+            puntuaciones_vecinos = []
+            for vecino in vecinos:
+                puntuaciones_vecinos.append(funcionObjetivo(vecino))
+
+            #Encontrar la mejor solución entre los vecinos
+            bestLocalValue = max(puntuaciones_vecinos)
+            bestLocalSolution = vecinos[puntuaciones_vecinos.index(bestLocalValue)]
+        
+            iteracion += 1
+
+            if bestLocalValue > bestGlobalValue:
+                bestGlobalValue = bestLocalValue
+                bestGlobalSolution = bestLocalSolution
+            
+            else:
+                print("La mejor solución encontrada es:", bestGlobalSolution)
+                print("Puntuación de la mejor solución:", round(bestGlobalValue, 2))
+                finalizado = True
+                break
+
+        
+    return bestGlobalSolution
 
