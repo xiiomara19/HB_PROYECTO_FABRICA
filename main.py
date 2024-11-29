@@ -157,6 +157,9 @@ def calcularVecinosInsert(vectorIni):
 
 
 def conseguirPuestosNoFijosActivos(lista1, lista2):
+    """
+    Obtiene una lista de los puestos no fijos, es decir, aquellos que no son puestos principales, y que tienen un trabajador asignado.
+    """
     resultado = []
     # Crear una copia de lista1 para manejar las ocurrencias
     copia_lista1 = lista1.copy()
@@ -169,10 +172,10 @@ def conseguirPuestosNoFijosActivos(lista1, lista2):
     return resultado
 
 def generarVecinos(solucion):
-
     """
     Genera los vecinos de la solución.
     """
+
     puestos_no_fijos=[1,3,5,7,9,11,13,15]
     lista_vecinos=[]
     subvecinos=set()
@@ -204,6 +207,10 @@ def generarVecinos(solucion):
 
 ######### HILL CLIMBING #########
 def greedyHillClimbing(array_trabajadores_disponibles):
+    """
+    Implementa el algoritmo Hill Climbing para encontrar la mejor solución de la distribución de trabajadores usando la estrategia Greedy.
+    """
+
     #Solución inicial
     bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
     bestGlobalSolution = bestLocalSolution
