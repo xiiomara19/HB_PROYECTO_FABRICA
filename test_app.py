@@ -5,24 +5,21 @@ import table
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
 archivo = 'DATOS turnos HB compartir.xlsm'
-
-# Leer el excel y asígnarlo a variables globales
-# Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
-(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
-
+# Crear una instancia de la clase Table
+tabla = table.Table(archivo)
 
 def main_program(numprueba):
     if numprueba == 1:
         print("---------------------------------------CONTENIDO EXCEL---------------------------------------")
         #Imprimir las variables globales para confirmar que no ha habido ningún problema
-        readTables.printTablesInfo(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) 
+        tabla.getAttributes()
 
     elif numprueba == 2:
         """PRUEBAS FUNCIÓN OBJETIVO"""
         print("---------------------------------------PRUEBAS FUNCIÓN OBJETIVO---------------------------------------")
         # Coger en orden los trabajadores hasta llenar todos los puestos:
         # si el el array[0] = 1 significa que el trabajador 0 (id = 13512) trabaja en el puesto numero 1 (AB1 Ayte)
-        possibleSolution1 = [i for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
+        possibleSolution1 = [i for i in range(tabla.cantidad_puestos)] + [-1 for i in range(tabla.cantidad_trabajadores - tabla.cantidad_puestos)]
         print("Possible solutuion 1: ", possibleSolution1)
         # Ejemplo de uso con datos ficticios
         puntuacion = main.funcionObjetivo(possibleSolution1)
@@ -31,7 +28,7 @@ def main_program(numprueba):
 
         # CASO REAL ASGINACIONES EXCEL:
         # si el el array[0] = 1 significa que el trabajador 0 (id = 13512) trabaja en el puesto numero 1 (AB1 Ayte)
-        possibleSolution2 = [-1 for i in range(cantidad_trabajadores)]
+        possibleSolution2 = [-1 for i in range(tabla.cantidad_trabajadores)]
         possibleSolution2[72] = 0
         possibleSolution2[73] = 1
         possibleSolution2[66] = 2
@@ -57,7 +54,7 @@ def main_program(numprueba):
 
         # Caso artifical para comprobar la suma de función objetivo:
         # si el el array[0] = 1 significa que el trabajador 0 (id = 13512) trabaja en el puesto numero 1 (AB1 Ayte)
-        possibleSolution3 = [-1 for i in range(cantidad_trabajadores)]
+        possibleSolution3 = [-1 for i in range(tabla.cantidad_trabajadores)]
         possibleSolution3[38] = 0
         possibleSolution3[0] = 0
         possibleSolution3[1] = 1
@@ -110,8 +107,7 @@ def main_program(numprueba):
     elif numprueba == 6:
         """PRUEBAS CLASE TABLE"""
         print("---------------------------------------PRUEBAS CLASE TABLE---------------------------------------")
-        # Crear una instancia de la clase Table
-        tabla = table.Table(archivo)
+        
         # Comrpobamos que se hayan inicializado bien los atributos de dos formas
         #1. Usando el método getAttributes
         print("Imprimiendo los atributos con el método getAttributes:")

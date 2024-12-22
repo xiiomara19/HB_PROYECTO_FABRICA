@@ -17,7 +17,6 @@ pip install openpyxl
 """
 
 ####### GET EQUIPOS DE TRABAJADORES ########3
-
 def getTrabajadoresPorEquipo(archivo):
     # Representación de los equipos y sus trabajadores en un diccionario
     # trabajadores_por_equipo = {
@@ -47,24 +46,8 @@ def getTrabajadoresPorEquipo(archivo):
 
     return trabajadores_por_equipo
 
-#############CREAR UN PRIMER RESULTADO LOCAL #######################
-def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores):
-
-    # Crear una lista de valores de -1 (inicialmente para todos los trabajadores)
-    array_trabajadores_disponibles = [False] * cantidad_trabajadores 
-
-    trabajadores_equipo_usuario = trabajadores_por_equipo[equipo_usuario]
-
-    for index, id_trabajador in enumerate(array_id_trabajadores):
-        if id_trabajador in trabajadores_equipo_usuario:
-            array_trabajadores_disponibles[index] = True
-
-    return array_trabajadores_disponibles
-
 
 ######### IDs DE TRABAJADORES #########
-
-
 def getIdTrabajadores(archivo):
     """
     Extrae los IDs de trabajadores desde la columna B de la hoja "ILUO" del archivo.
@@ -93,7 +76,6 @@ def getPuestosDeTrabajo(archivo):
     return df_puestos_trabajo.values.flatten().tolist()
 
 ######### ILUO #########
-
 def getMatrizILUO(archivo):
     """
     Obtiene la matriz ILUO (trabajadores y puestos) desde la hoja "ILUO" en las columnas C a R.
@@ -109,7 +91,6 @@ def getMatrizILUO(archivo):
 
 
 ######### Prioridades #########
-
 def getMatrizPrioridades(archivo):
     """
     Lee la matriz de prioridades desde la hoja "Prioridades", ajustando los valores cero a tres.
@@ -131,7 +112,6 @@ def getMatrizPrioridades(archivo):
 
 
 ######### Maq_Prio #########
-
 def getArrayMapPrio(archivo):
     """
     Obtiene la lista de prioridades por máquina desde la hoja "Maq_Prio".
@@ -147,7 +127,6 @@ def getArrayMapPrio(archivo):
 
 
 ######### OP_Maq #########
-
 def getArrayOPMaq(archivo):
     """
     Extrae la cantidad de operadores por máquina desde la hoja "OP_Maq", creando listas para celdas con múltiples valores.
@@ -203,46 +182,3 @@ def getTablesInfo(archivo):
         array_OP_Maq = []
 
     return (trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq)
-
-
-def printTablesInfo(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq):
-    """
-    Imprime los datos obtenidos del archivo Excel, incluyendo trabajadores, puestos, matrices ILUO y prioridades.
-    """
-
-    print(" \n -------- DICCIONARIO TRABAJADORES POR CADA EQUIPO --------")
-    print(trabajadores_por_equipo)
-
-    print(" \n -------- ARRAY Ids TRABAJADORES --------")
-    print("Cantidad de trabajadores = ", cantidad_trabajadores)
-    print(array_id_trabajadores)
-
-    print(" \n -------- ARRAY PUESTO DE TRABAJO --------")
-    print("Cantidad de puestos = ", cantidad_puestos)
-    print(array_puestos_de_trabajo)
-
-    print(" \n -------- MATRIZ ILUO --------")
-    if not matriz_ILUO:
-        print(" ¡¡AVISO!! LAS DIMENSIONES DE LA MATRIZ ILUO NO SON CORRECTAS")
-    else:
-        for row in matriz_ILUO:
-            print(row)
-
-    print(" \n -------- MATRIZ PRIORIDADES --------")
-    if not matriz_Prioridades:
-        print(" ¡¡AVISO!! LAS DIMENSIONES DE LA MATRIZ PRIORIDADES NO SON CORRECTAS")
-    else:
-        for row in matriz_Prioridades:
-            print(row)
-
-    print(" \n -------- ARRAY PRIORIDADES DE CADA MAQUINA --------")
-    if not array_Maq_Prio:
-        print(" ¡¡AVISO!! LAS DIMENSIONES DEL ARRAY PRIORIDADES DE MAQUINAS NO ES CORRECTO")
-    else:
-        print(array_Maq_Prio)
-
-    print(" \n -------- ARRAY CANTIDAD DE OPERADORES POR MÁQUINA --------")
-    if not array_OP_Maq:
-        print(" ¡¡AVISO!! LAS DIMENSIONES DEL ARRAY CANTIDAD DE TRABAJADORES POR MAQUINAS NO ES CORRECTO")
-    else:
-        print(array_OP_Maq)

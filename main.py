@@ -5,10 +5,6 @@ import table
 # Ruta del archivo de Excel
 archivo = 'DATOS turnos HB compartir.xlsm'
 
-# Leer el excel y asígnarlo a variables globales
-# Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
-(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
-
 #Crear instancia de la clase Table
 dataTable = table.Table(archivo)
 
@@ -73,7 +69,7 @@ def repartoTrabajadoresExperimentados(array_trabajadores_disponibles):
 
 ######### ASIGNACIÓN VALORES POR EQUIPO #########
 def asignar_valores_por_equipo(equipo_usuario):
-    return readTables.asignar_valores_por_equipo(dataTable.trabajadores_por_equipo, equipo_usuario, dataTable.cantidad_trabajadores, dataTable.array_id_trabajadores)
+    return dataTable.asignar_valores_por_equipo(equipo_usuario)
 
 
 ######### FUNCIÓN OBJETIVO #########
@@ -85,13 +81,13 @@ def funcionObjetivo(possibleSolution):
     puntuacion_total = 0
 
     # Recorremos cada máquina o puesto (i representa la máquina o puesto)
-    for i in range(cantidad_puestos):
+    for i in range(dataTable.cantidad_puestos):
         
-        prioridad_maquina_i = array_Maq_Prio[i]
+        prioridad_maquina_i = dataTable.array_Maq_Prio[i]
 
         # Verificamos si la máquina tiene algún trabajador asignado en 'possibleSolution'
         trabajadores_en_puesto_i = []
-        for index_trab in range(cantidad_trabajadores):
+        for index_trab in range(dataTable.cantidad_trabajadores):
             # si el trabajador actual está en el puesto i, entonces nos guardamos el id del trabajador
             if i == possibleSolution[index_trab]:
                 trabajadores_en_puesto_i.append(index_trab) 
@@ -103,7 +99,7 @@ def funcionObjetivo(possibleSolution):
             # Para cada trabajador (j representa el trabajadores dentro del puesto i)
             for index_trab_de_i in trabajadores_en_puesto_i:
                                 
-                prioridad_trabajador = matriz_Prioridades[index_trab_de_i][i]
+                prioridad_trabajador = dataTable.matriz_Prioridades[index_trab_de_i][i]
 
                 # Añadir a la puntuación de la máquina con el inverso de las prioridades
                 suma_prioridad_trabajadores += 1 / prioridad_trabajador
