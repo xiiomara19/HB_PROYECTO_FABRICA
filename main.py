@@ -1,5 +1,5 @@
 import readTables
-import itertools
+import table
 
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
@@ -9,13 +9,15 @@ archivo = 'DATOS turnos HB compartir.xlsm'
 # Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
 (trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
 
+#Crear instancia de la clase Table
+dataTable = table.Table(archivo)
 
 ######### ASIGNACIÓN INICIAL #########
 # Implementar una primera función que asigne trabajadores con mayor experiencia 
 # (niveles 3 y 4 en la matriz ILUO) a los puestos prioritarios. 
 # Los trabajadores restantes serán distribuidos usando un enfoque como el hill climbing.
 
-def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimiento, possibleSolution, cantidad_trabajadores, cantidad_puestos,array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO):
+def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimiento, possibleSolution, array_trabajadores_disponibles):
     """
     Asigna a los trabajadores con mayor conocimiento (ILUO 4 y 3) a los puestos principales.
     La asignación se realiza considerando las prioridades definidas en la matriz_Prioridades.
@@ -30,7 +32,7 @@ def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimien
         # print("el trabajador j está disponible = ", esteTrabajadorEstaDisponible )
 
         # Recorrer cada puesto disponible
-        for puesto_i in range(cantidad_puestos):
+        for puesto_i in range(dataTable.cantidad_puestos):
             # print(" Id de puesto actual = ", puesto_i)
 
             #Verificar si este puesto no está inicialmente ocupado
@@ -39,11 +41,11 @@ def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimien
                 continue
             
             # Consultar la prioridad del trabajador para este puesto
-            prioridadTrabajador_j_enPuesto_i = matriz_Prioridades[trabajador_j][puesto_i]
+            prioridadTrabajador_j_enPuesto_i = dataTable.matriz_Prioridades[trabajador_j][puesto_i]
             # print("prioridadTrabajador_j_enPuesto_i = ", prioridadTrabajador_j_enPuesto_i)
             
             # Consultar el nivel de experiencia (ILUO) del trabajador en este puesto
-            ILUOTrabajador_j_enPuesto_i = matriz_ILUO[trabajador_j][puesto_i]
+            ILUOTrabajador_j_enPuesto_i = dataTable.matriz_ILUO[trabajador_j][puesto_i]
             # print("ILUOTrabajador_j_enPuesto_i = ", ILUOTrabajador_j_enPuesto_i)
            
             # Condiciones para asignar el trabajador al puesto:
@@ -62,16 +64,16 @@ def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimien
 def repartoTrabajadoresExperimentados(array_trabajadores_disponibles):
     # Crear una posible solución inicial: se asignan los primeros puestos a trabajadores en orden, 
     # y los trabajadores restantes se dejan sin asignar (-1).
-    possibleSolution = [-1 for i in range(cantidad_puestos)] + [-1 for i in range(cantidad_trabajadores - cantidad_puestos)]
+    possibleSolution = [-1 for i in range(dataTable.cantidad_puestos)] + [-1 for i in range(dataTable.cantidad_trabajadores - dataTable.cantidad_puestos)]
     for prio in range(1, 10):  # Itera de 1 a 9 --> Prioridades de Prio_Maq
         for cono in range(4, 0, -1):  # Itera de 4 a 1 --> Conocimientos de ILUO
-            possibleSolutionNew = repartoTrabajadoresExperimentadosPrioridadConocimiento(prio, cono, possibleSolution, cantidad_trabajadores, cantidad_puestos, array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO)
+            possibleSolutionNew = repartoTrabajadoresExperimentadosPrioridadConocimiento(prio, cono, possibleSolution, array_trabajadores_disponibles)
     return possibleSolutionNew
 
 
 ######### ASIGNACIÓN VALORES POR EQUIPO #########
 def asignar_valores_por_equipo(equipo_usuario):
-    return readTables.asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores)
+    return readTables.asignar_valores_por_equipo(dataTable.trabajadores_por_equipo, equipo_usuario, dataTable.cantidad_trabajadores, dataTable.array_id_trabajadores)
 
 
 ######### FUNCIÓN OBJETIVO #########
