@@ -1,5 +1,6 @@
 import readTables
 import main
+import table
 
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
@@ -106,10 +107,35 @@ def main_program(numprueba):
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
         solution, value = main.greedyHillClimbing(array_trabajadores_disponibles)
         print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+    elif numprueba == 6:
+        """PRUEBAS CLASE TABLE"""
+        print("---------------------------------------PRUEBAS CLASE TABLE---------------------------------------")
+        # Crear una instancia de la clase Table
+        tabla = table.Table(archivo)
+        # Comrpobamos que se hayan inicializado bien los atributos de dos formas
+        #1. Usando el método getAttributes
+        print("Imprimiendo los atributos con el método getAttributes:")
+        tabla.getAttributes()
+        #2. Imprimiendo los atributos uno por uno
+        print("\nImprimiendo los atributos uno por uno:")
+        print("\nTrabajadores por equipo:\n", tabla.trabajadores_por_equipo)
+        print("\nId de trabajadores:\n",tabla.array_id_trabajadores)
+        print("\nCantidad de trabajadores:\n",tabla.cantidad_trabajadores)
+        print("\nPuestos de trabajo:\n",tabla.array_puestos_de_trabajo)
+        print("\nCantidad de puestos:\n",tabla.cantidad_puestos)
+        print("\nMatriz ILUO:\n",tabla.matriz_ILUO)
+        print("\nMatriz Prioridades:\n",tabla.matriz_Prioridades)
+        print("\nArray Maq Prio:\n",tabla.array_Maq_Prio)
+        print("\nArray OP Maq:\n",tabla.array_OP_Maq)
 
 
 if __name__ == "__main__":
     print("¿Qué pruebas de que función quieres ejecutar?")
-    numprueba = int(input("1. Visualizar contenido excel\n2. Pruebas de función objetivo\n3. Pruebas de asignación inicial\n4. Pruebas insert\n5. Pruebas Hill Climbing\n"))
+    numprueba = int(input("1. Visualizar contenido excel\n"
+                          "2. Pruebas de función objetivo\n"
+                          "3. Pruebas de asignación inicial\n"
+                          "4. Pruebas insert\n"
+                          "5. Pruebas Hill Climbing\n"
+                          "6. Pruebas clase Table\n"))
     main_program(numprueba)
 
