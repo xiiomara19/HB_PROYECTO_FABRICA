@@ -19,7 +19,7 @@ class Table:
         
 
     #Métodos
-    def getAttributes(self):
+    def printAttributes(self):
         """
         Imprime los datos obtenidos del archivo Excel, incluyendo trabajadores, puestos, matrices ILUO y prioridades.
         """
