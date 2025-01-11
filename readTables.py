@@ -47,7 +47,7 @@ def getTrabajadoresPorEquipo(archivo):
 
     return trabajadores_por_equipo
 
-#############CREAR UN PRIMER RESULTADO LOCAL #######################
+############# CREAR UN PRIMER RESULTADO LOCAL #######################
 def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores):
 
     # Crear una lista de valores de -1 (inicialmente para todos los trabajadores)
@@ -63,8 +63,6 @@ def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad
 
 
 ######### IDs DE TRABAJADORES #########
-
-
 def getIdTrabajadores(archivo):
     """
     Extrae los IDs de trabajadores desde la columna B de la hoja "ILUO" del archivo.
