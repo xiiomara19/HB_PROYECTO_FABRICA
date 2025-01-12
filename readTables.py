@@ -16,6 +16,56 @@ pip install pandas
 pip install openpyxl
 """
 
+####### GET EQUIPOS DE TRABAJADORES ########3
+
+def getTrabajadoresPorEquipo(archivo):
+    # Representación de los equipos y sus trabajadores en un diccionario
+    # trabajadores_por_equipo = {
+    # "A": [13512, 13924, 13532, 13291, 11865, 13923, 11358, 10308, 13542, 10612, 10694, 10361, 9022, 11252, 12156, 10316, 7741, 12536],
+    # "B": [9729, 13297, 7680, 10693, 10354, 13921, 13346, 13932, 13677, 12418, 11132, 13968, 9362, 13679, 10590, 8879, 11360, 13468],
+    # "C": [13404, 10698, 12227, 13922, 9843, 10591, 12023, 10313, 13242, 13964, 7470, 13962, 12374, 13930, 7468, 13866, 10472, 10889, 13652, 8877, 11002],
+    # "D": [12422, 8210, 13241],
+    # "E": [11983, 12228, 9017, 9844, 9225, 8921, 8882]}
+
+    # Leer las columnas por nombre, no por letras (Eq para equipos y Npers para IDs de trabajadores)
+    df = pd.read_excel(archivo, sheet_name='ILUO', usecols=["Eq", "Npers"])
+
+    # Crear un diccionario vacío para almacenar los trabajadores por equipo
+    trabajadores_por_equipo = {}
+
+    # Iterar sobre las filas del DataFrame
+    for _, row in df.iterrows():
+        equipo = row['Eq']  # Columna Eq: equipo
+        id_trabajador = row['Npers']  # Columna Npers: ID del trabajador
+        
+        # Si el equipo no existe en el diccionario, lo agregamos
+        if equipo not in trabajadores_por_equipo:
+            trabajadores_por_equipo[equipo] = []
+        
+        # Agregar el ID del trabajador a la lista correspondiente al equipo
+        trabajadores_por_equipo[equipo].append(id_trabajador)
+
+    return trabajadores_por_equipo
+
+#############CREAR UN PRIMER RESULTADO LOCAL #######################
+def asignar_valores_por_equipo(trabajadores_por_equipo, equipo_usuario, cantidad_trabajadores, array_id_trabajadores, faltas, extras):
+
+    # Crear una lista de valores de -1 (inicialmente para todos los trabajadores)
+    array_trabajadores_disponibles = [False] * cantidad_trabajadores 
+
+    trabajadores_equipo_usuario = trabajadores_por_equipo[equipo_usuario]
+    for falta in faltas:
+        trabajadores_equipo_usuario.remove(falta)
+    for extra in extras:
+        trabajadores_equipo_usuario.append(extra)
+
+    for index, id_trabajador in enumerate(array_id_trabajadores):
+        if id_trabajador in trabajadores_equipo_usuario:
+            array_trabajadores_disponibles[index] = True
+
+    return array_trabajadores_disponibles
+
+
 ######### IDs DE TRABAJADORES #########
 
 
@@ -24,7 +74,7 @@ def getIdTrabajadores(archivo):
     Extrae los IDs de trabajadores desde la columna B de la hoja "ILUO" del archivo.
     """
     # Leer solo la columna B de la hoja "ILUO"
-    df_id_trabajadores = pd.read_excel(archivo, sheet_name='ILUO', usecols="B", skiprows= 0, nrows=79)
+    df_id_trabajadores = pd.read_excel(archivo, sheet_name='ILUO', usecols="B")
 
     # Convertir todos los valores a integer
     df_id_trabajadores = df_id_trabajadores.fillna(0).astype(int)
@@ -53,7 +103,7 @@ def getMatrizILUO(archivo):
     Obtiene la matriz ILUO (trabajadores y puestos) desde la hoja "ILUO" en las columnas C a R.
     """
     # Leer la hoja "ILUO" del archivo de Excel, especificando las columnas y filas necesarias
-    df_ILUO = pd.read_excel(archivo, sheet_name='ILUO', usecols="C:R", skiprows= 0, nrows=79)
+    df_ILUO = pd.read_excel(archivo, sheet_name='ILUO', usecols="C:R")
 
     # Convertir todos los valores a integer
     df_ILUO = df_ILUO.fillna(0).astype(int)
@@ -69,7 +119,7 @@ def getMatrizPrioridades(archivo):
     Lee la matriz de prioridades desde la hoja "Prioridades", ajustando los valores cero a tres.
     """
     # Leer la hoja "Prioridades" del archivo de Excel, especificando las columnas y filas necesarias
-    df_Prioridades = pd.read_excel(archivo, sheet_name='Prioridades', usecols="B:Q", nrows=79)
+    df_Prioridades = pd.read_excel(archivo, sheet_name='Prioridades', usecols="B:Q")
 
     # Convertir todos los valores a integer
     df_Prioridades = df_Prioridades.fillna(0).astype(int)
@@ -128,6 +178,7 @@ def getTablesInfo(archivo):
     """
     Reúne y valida toda la información de trabajadores, puestos, ILUO, prioridades, y asignaciones.
     """
+    trabajadores_por_equipo = getTrabajadoresPorEquipo(archivo)
 
     array_id_trabajadores = getIdTrabajadores(archivo)
     cantidad_trabajadores = len(array_id_trabajadores)
@@ -155,13 +206,17 @@ def getTablesInfo(archivo):
         print(" ¡¡AVISO!! LAS DIMENSIONES DEL ARRAY CANTIDAD DE TRABAJADORES POR MAQUINAS NO ES CORRECTO")
         array_OP_Maq = []
 
-    return (array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq)
+    return (trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq)
 
 
-def printTablesInfo(array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq):
+def printTablesInfo(trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq):
     """
     Imprime los datos obtenidos del archivo Excel, incluyendo trabajadores, puestos, matrices ILUO y prioridades.
     """
+
+    print(" \n -------- DICCIONARIO TRABAJADORES POR CADA EQUIPO --------")
+    print(trabajadores_por_equipo)
+
     print(" \n -------- ARRAY Ids TRABAJADORES --------")
     print("Cantidad de trabajadores = ", cantidad_trabajadores)
     print(array_id_trabajadores)
