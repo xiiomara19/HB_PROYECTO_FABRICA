@@ -1,4 +1,3 @@
-import readTables
 import table
 
 ######### DATOS INICIALES #########
@@ -109,8 +108,6 @@ def funcionObjetivo(possibleSolution):
 
     return puntuacion_total
 
-
-
 ######### INSERT CON POSICIONES FIJAS #########
 def insertVector(V, i, j):
     #inserts hacia la derecha
@@ -186,7 +183,7 @@ def generarVecinos(solucion):
     plantilla = [float('inf') if elemento in no_fijos_activos else elemento for elemento in solucion]
     
     #generar todas las asignaciones posibles 
-    subvecinos=calcularVecinosInsert(no_fijos_activos)
+    subvecinos = calcularVecinosInsert(no_fijos_activos)
 
     for elem in subvecinos:
         elem_iter = iter(elem)
@@ -201,6 +198,56 @@ def generarVecinos(solucion):
     
     return lista_vecinos
 
+
+def generarVecinosNiveles(solucion):
+    """
+    Genera vecinos válidos considerando niveles de experiencia y prioridades.
+    :param solucion: Lista que representa la asignación actual de trabajadores a puestos.
+    :param matriz_ILUO: Matriz que indica los niveles de experiencia de los trabajadores en cada puesto.
+    :param matriz_Prioridades: Matriz que indica las prioridades de los trabajadores para cada puesto.
+    :return: Lista de soluciones vecinas válidas.
+    """
+    vecinos = []
+
+    for i in range(len(solucion)):
+        for j in range(len(solucion)):
+            if i != j:
+                # Crear una copia de la solución actual
+                nuevo_vecino = solucion.copy()
+
+                # Intercambiar trabajadores entre los puestos i y j
+                nuevo_vecino[i], nuevo_vecino[j] = nuevo_vecino[j], nuevo_vecino[i]
+
+                # Verificar validez del vecino
+                if esVecinoValido(nuevo_vecino, dataTable.matriz_ILUO, dataTable.matriz_Prioridades):
+                    vecinos.append(nuevo_vecino)
+
+    return vecinos
+
+
+def esVecinoValido(vecino, matriz_ILUO, matriz_Prioridades):
+    """
+    Verifica si un vecino es válido considerando restricciones de experiencia y prioridades.
+    :param vecino: Solución vecina a evaluar.
+    :param matriz_ILUO: Matriz que indica los niveles de experiencia de los trabajadores en cada puesto.
+    :param matriz_Prioridades: Matriz que indica las prioridades de los trabajadores para cada puesto.
+    :return: True si el vecino es válido, False en caso contrario.
+    """
+    for trabajador, puesto in enumerate(vecino):
+        if puesto == -1:  # Trabajadores sin asignar siempre son válidos
+            continue
+
+        # Obtener la experiencia y prioridad del trabajador para el puesto asignado
+        experiencia = matriz_ILUO[trabajador][puesto]
+        prioridad = matriz_Prioridades[trabajador][puesto]
+
+        # Condiciones de validez (puedes personalizar según tus reglas):
+        # - Experiencia suficiente (por ejemplo, ILUO >= 3)
+        # - Prioridad válida (por ejemplo, prioridad <= 3)
+        if experiencia < 3 or prioridad > 3:
+            return False
+
+    return True
 
 
 ######### HILL CLIMBING #########
@@ -245,4 +292,3 @@ def greedyHillClimbing(array_trabajadores_disponibles):
 
         
     return bestGlobalSolution, round(bestGlobalValue, 2)
-

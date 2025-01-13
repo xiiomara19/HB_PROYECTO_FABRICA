@@ -46,7 +46,6 @@ def getTrabajadoresPorEquipo(archivo):
 
     return trabajadores_por_equipo
 
-
 ######### IDs DE TRABAJADORES #########
 def getIdTrabajadores(archivo):
     """
