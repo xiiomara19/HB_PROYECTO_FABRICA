@@ -1,5 +1,8 @@
 import readTables
+import GRASP
+import HillClimbingTabu
 import main
+import VND
 import table
 
 ######### DATOS INICIALES #########
@@ -104,7 +107,40 @@ def main_program(numprueba):
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
         solution, value = main.greedyHillClimbing(array_trabajadores_disponibles)
         print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+    
     elif numprueba == 6:
+        """PRUEBAS GRASP"""
+        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+
+        # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
+        solution, value = GRASP.grasp(array_trabajadores_disponibles)
+        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+    
+    elif numprueba == 7:
+        """PRUEBAS randomHillClimbingTabu"""
+        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+
+        # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
+        solution, value = HillClimbingTabu.randomHillClimbingTabu(array_trabajadores_disponibles)
+        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+    
+    elif numprueba == 8:
+        """PRUEBAS VND"""
+        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+
+        # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
+        solution, value = VND.vnd(array_trabajadores_disponibles)
+        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+    
+
+
+    elif numprueba == 9:
         """PRUEBAS CLASE TABLE"""
         print("---------------------------------------PRUEBAS CLASE TABLE---------------------------------------")
         
@@ -132,6 +168,9 @@ if __name__ == "__main__":
                           "3. Pruebas de asignación inicial\n"
                           "4. Pruebas insert\n"
                           "5. Pruebas Hill Climbing\n"
-                          "6. Pruebas clase Table\n"))
+                          "6. Pruebas GRASP\n"
+                          "7. Pruebas randomHillClimbingTabu\n"
+                          "8. Pruebas VND\n"
+                          "9. Pruebas clase Table\n"))
     main_program(numprueba)
 
