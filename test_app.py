@@ -110,7 +110,7 @@ def main_program(numprueba):
     
     elif numprueba == 6:
         """PRUEBAS GRASP"""
-        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        print("---------------------------------------PRUEBAS GRASP---------------------------------------")
         equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
@@ -120,7 +120,7 @@ def main_program(numprueba):
     
     elif numprueba == 7:
         """PRUEBAS randomHillClimbingTabu"""
-        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        print("---------------------------------------PRUEBAS RANDOM HILL CLIMBING CON TABU SEARCH---------------------------------------")
         equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
@@ -130,7 +130,7 @@ def main_program(numprueba):
     
     elif numprueba == 8:
         """PRUEBAS VND"""
-        print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
+        print("---------------------------------------PRUEBAS VND---------------------------------------")
         equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
