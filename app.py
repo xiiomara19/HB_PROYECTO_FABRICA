@@ -5,7 +5,7 @@ def main_program(equipo_usuario):
     array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
     # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-    solution, value = main.greedyHillClimbing(array_trabajadores_disponibles)
+    solution, value = main.greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario)
     print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
 
 

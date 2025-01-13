@@ -13,8 +13,6 @@ archivo = 'DATOS turnos HB compartir.xlsm'
 def asignarTL(grupo, trabajadores, sol):
     
 
-def asignarTractorista(trabajadores, sol):
-
 def trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo):
     puestos_y_trabajadores=[[p] for p in lista_puestos_ppal]
     for ind in range(len(lista_puestos_ppal)):
@@ -33,72 +31,109 @@ def trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo):
         #primera posicion de cada sublista: puesto de trabajo
         #segunda posicion de cada sublista: lista de los datos del trabajador 
         puestos_y_trabajadores[ind].append(trabajadoresPosibles)
-
+    #devuelve los trabajadores en el orden en el que salen en la matriz del excel, por eso luego hay que ordenarlos por prioridad
     return puestos_y_trabajadores
+
+def eliminarTrabajadorDeSublistas(lista, trabajador):
+    for sublista in lista:
+        if trabajador in sublista[0]:
+            sublista.remove(trabajador)
+
+
 ######### ASIGNACIÓN INICIAL #########
 # Implementar una primera función que asigne trabajadores con mayor experiencia 
 # (niveles 3 y 4 en la matriz ILUO) a los puestos prioritarios. 
 # Los trabajadores restantes serán distribuidos usando un enfoque como el hill climbing.
 
 def asignacionIni(grupo, trabajadores):
-    puestos_principales = [0,2,4,6,8,12,14] #los puestosde TL y tractorista no se tiene en cuenta porque son casos especiales
+    puestos_principales = [0,2,4,6,8,11,12,14] #el puesto de TL no se tiene en cuenta porque es un caso especial
     posibles_candidatos = []
+    trabajadores_asignados=[]
     puestos_que_se_pueden_completar=[]
     sol = [-1] * cantidad_trabajadores
     asignarTL(grupo, trabajadores, sol)
-    if array_Maq_Prio[11]==1:
-        asignarTractorista(trabajadores, sol)
     
     for prio in range(1,9):
         parada = False
         #lista de los puestos principales con prioridad "prio"
         lista_puestos_ppal = [puesto for puesto in range(len(array_Maq_Prio)) if array_Maq_Prio[puesto]==prio and puesto in puestos_principales]
-        posibles_candidatos=[]
+        posibles_candidatos=[[p] for p in lista_puestos_ppal]
         for ind, puesto in enumerate(lista_puestos_ppal):   
             #puestos_y_trabajadores es una lista de listas, donde cada sublista tiene el puesto y los trabajadores posibles para ese puesto
             puestos_y_trabajadores = trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo)
+            #el bucle ordena los posibles trabajadores por prioridad
             for pri in range(1,3):
-                #metemos en posibles_candidatos el indice del trabajador con prioridad "pri" y que pertenecen al grupo 
-                posibles_candidatos[ind].append([sub[0] for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==True])
-                
-                if len(posibles_candidatos[ind])==0 or posibles_candidatos[ind]==None:
-                    #si no hay ninguno, metemos a un trabajador con prioridad pri aunque no pertenezca al grupo 
-                    posibles_candidatos[ind].append([sub[0] for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==False])
+                #primero metemos en posibles_candidatos el indice del trabajador con prioridad "pri" y que pertenecen al grupo 
+                candidato=[sub for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==True]
+                #para evitar añadir listas vacias
+                if candidato:
+                    posibles_candidatos[ind].extend(candidato)
+                #luego, metemos a un trabajador con prioridad pri aunque no pertenezca al grupo 
+                candidato=[sub for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==False]
+                if candidato:
+                    posibles_candidatos[ind].extend(candidato)
 
-                #si sigue sin haber ninguno, pasamos al siguiente puesto -> nadie puede completar el puesto -> esta máquina no se puede arrancar
-                if len(posibles_candidatos[ind])==0 or posibles_candidatos[ind]==None:
-                    break
-                #si hay alguien que pueda cubrir el puesto, lo añadimos a puestos_que_se_pueden_completar
-                if len(posibles_candidatos[ind])>0:
-                    puestos_que_se_pueden_completar.append(puesto)
-
+            #si hay alguien que pueda cubrir el puesto, lo añadimos a puestos_que_se_pueden_completar
+            if len(posibles_candidatos[ind])>1:
+                puestos_que_se_pueden_completar.append(puesto)
+        puestos_y_trabajadores_ordenados = posibles_candidatos.copy()
+        #vamos a generar una primera solucion para el best first
         while not parada:
-            for ind, puesto in enumerate(lista_puestos_ppal):
+            for ind, puesto in enumerate(puestos_que_se_pueden_completar):
+                #hay que tener en cuenta que en la primera posicion de cada sublista está el puesto, 
+                #por lo que hay que contar los elementos a partir del segundo ([1:])
                 #si solo hay un trabajador que pueda ocupar el puesto, lo asignamos directamente
-                if len(posibles_candidatos[ind])==1:
-                    trabajador = posibles_candidatos[ind][0]
-                    sol[trabajador]=puesto
+                if len(posibles_candidatos[ind][1:])==1 and puesto not in sol:
+                    id_trabajador = posibles_candidatos[ind][1][0]
+                    sol[id_trabajador]=puesto
+                    trabajadores_asignados.append(id_trabajador)
                     #y lo eliminamos de los los demás puestos en los que podría estar
-                    for sublista in posibles_candidatos:
-                        if trabajador in sublista:
-                            sublista.remove(trabajador)
-                #si hay más de uno
-                #if len(posibles_candidatos[ind])>1:
-                    #se busca si alguno de esos solamente puede cubrir ese puesto
+                    eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
+           
+            for ind, puesto in enumerate(lista_puestos_ppal) and puesto not in sol:       
+                #si hay más de uno elegimos el primero
+                if len(posibles_candidatos[ind][1:])>1:
+                    id_trabajador = posibles_candidatos[ind][1][0]
+                    sol[id_trabajador]=puesto
+                    trabajadores_asignados.append(id_trabajador)
+                    eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
 
-            #primer parentesis all: si ya se han comletado todos los puestos para los que habia trabajadores => parar
+                #es necesario dividirlo en dos 'if' por si se da un caso igual a este:
+                # en el puesto 0 pueden estar los trabajadores 4 y 5 y en el puesto 2 solo puede estar el trabajador 4
+                # lo más optimo sería que el trabajador 4 estuviera en el puesto 2 y el trabajador 5 en el puesto 0
+                #hay que dividirlo en dos bucles para que primero asigne todos los puestos a los que solo puede ir un trabajador
+
+            #primer parentesis all: si todos los puesto que se podian completar aparecen en la solucion => parar
             #segundo parentesis all: si no queda ningun trabajador que pueda ocupar un puesto => parar
-            parada = all(sol[ind] != -1 for ind in puestos_que_se_pueden_completar) or all(posibles_candidatos[i]==[] for i in range(len(posibles_candidatos)))
+            parada = all(elem in sol for elem in puestos_que_se_pueden_completar) or all(len(posibles_candidatos[i])==1 for i in range(len(posibles_candidatos)))
 
     return sol
 
-def bestFirst(puestos_y_trabajadores, lista_puestos_ppal):
-    #vamos a unir a todos los trabajadores por puestos 
-    datos_trabajadores=[[p] for p in lista_puestos_ppal]
-    for i in len(puestos_y_trabajadores):
-        for j,num in enumerate(lista_puestos_ppal):
-            if puestos_y_trabajadores[i][0]==num:
-                datos_trabajadores[j].append(puestos_y_trabajadores[i][1])
+def generarCombinaciones(puestos_y_trabajadores):
+    combs=[]
+    for i in range(len(puestos_y_trabajadores)):
+        puesto = puestos_y_trabajadores[i][0]
+        for j in puestos_y_trabajadores[i][1:]:
+            
+
+    return combs
+
+def bestFirst(puestos_y_trabajadores, lista_puestos_ppal, sol):
+    #asumimos que la primera solucion es la mejor
+    val_mejor_sol = funcionObjetiboAsignacionIni(sol,puestos_y_trabajadores)
+    mejor_sol = sol.copy()
+    val_sol = float('-inf')
+    solucion = []
+    #generamos todas las combinaciones de trabajadores y puestos posibles
+    combinaciones = generarCombinanciones(puestos_y_trabajadores)
+    #combinaciones es una lista de tuplas con esta estructura: (puesto, [id_trabajadores])
+    for comb in combinaciones:
+        solucion = asignar(comb)
+        val_sol = funcionObjetiboAsignacionIni(solucion,puestos_y_trabajadores)
+        if val_sol > val_mejor_sol:
+            return solucion
+
+    return mejor_sol
 
     
 def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimiento, possibleSolution, cantidad_trabajadores, cantidad_puestos,array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO):
@@ -322,13 +357,14 @@ def generarVecinos(solucion):
 
 
 ######### HILL CLIMBING #########
-def greedyHillClimbing(array_trabajadores_disponibles):
+def greedyHillClimbing(array_trabajadores_disponibles, equipo):
     """
     Implementa el algoritmo Hill Climbing para encontrar la mejor solución de la distribución de trabajadores usando la estrategia Greedy.
     """
 
     #Solución inicial
     bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    #bestLocalSolution = asignacionIni(equipo, array_trabajadores_disponibles)
     bestGlobalSolution = bestLocalSolution
     print("Solución inicial:", bestLocalSolution)
 
