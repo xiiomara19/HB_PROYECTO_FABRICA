@@ -1,4 +1,5 @@
 import table
+import random
 
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
@@ -250,7 +251,7 @@ def esVecinoValido(vecino, matriz_ILUO, matriz_Prioridades):
     return True
 
 
-######### HILL CLIMBING #########
+######### GREEDY HILL CLIMBING #########
 def greedyHillClimbing(array_trabajadores_disponibles):
     """
     Implementa el algoritmo Hill Climbing para encontrar la mejor solución de la distribución de trabajadores usando la estrategia Greedy.
@@ -291,4 +292,188 @@ def greedyHillClimbing(array_trabajadores_disponibles):
                 break
 
         
+    return bestGlobalSolution, round(bestGlobalValue, 2)
+
+
+######### HILL CLIMBING + TABU #########
+def randomHillClimbingTabu(array_trabajadores_disponibles, tabu_list_size = 10):
+    """
+    Implementa el algoritmo Hill Climbing para encontrar la mejor solución de la distribución de trabajadores usando la estrategia Random.
+    """
+
+    #Solución inicial
+    bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestGlobalSolution = bestLocalSolution
+    print("Solución inicial:", bestLocalSolution)
+
+    # Inicializar TabuList
+    tabuList = []
+    tabuList.append(bestLocalSolution)
+
+    #Calcular la puntuación de la solución inicial
+    bestLocalValue = funcionObjetivo(bestLocalSolution)
+    bestGlobalValue = bestLocalValue
+    print("Puntuación de la solución inicial:", round(bestLocalValue, 2))
+
+    finalizado = False
+
+    while_i = 0
+    for_i = 0
+    while not finalizado: 
+        while_i += 1 
+
+        #Generar los vecinos de la solución actual DE FORMA ALEATORIA
+        vecinos = generarVecinos(bestLocalSolution)
+
+        #Calcular la puntuación de los vecinos
+        puntuaciones_vecinos = []
+        for vecino in vecinos:
+            puntuaciones_vecinos.append(funcionObjetivo(vecino))
+
+        #Elegir un mejor candidato
+        bestLocalSolution = 0
+        bestLocalValue = float('-inf')
+
+        #Aceptar un mejor candidato siempre y cuando no esté en el tabu list
+        for i in range(len(vecinos)):
+            if (vecinos[i] not in tabuList) and (puntuaciones_vecinos[i] >= bestLocalValue):
+                bestLocalSolution = vecinos[i] 
+                bestLocalValue = puntuaciones_vecinos[i]
+
+        tabuList.append(bestLocalSolution)
+        if (len(tabuList)>tabu_list_size):
+            tabuList = tabuList[1:]
+
+        #Actualizar la mejor solución globlal
+        if bestLocalValue > bestGlobalValue:
+            bestGlobalValue = bestLocalValue
+            bestGlobalSolution = bestLocalSolution
+        else:
+            finalizado = True
+            print(f"Ha entrado en el while {while_i} veces")
+
+        
+    return bestGlobalSolution, round(bestGlobalValue, 2)
+
+######### RCL #########
+def grasp_generate_rcl(vecinos, puntuaciones_vecinos, rcl_size=3):
+    """
+    Genera una Lista Restringida de Candidatos (RCL) con los mejores vecinos.
+    Si hay menos de `rcl_size` vecinos, se incluyen todos.
+    """
+    # Combinar vecinos y puntuaciones en una lista de tuplas, y ordenar por puntuación descendente
+    vecinos_puntuados = list(zip(vecinos, puntuaciones_vecinos))
+    vecinos_puntuados.sort(key=lambda x: x[1], reverse=True)  # Orden descendente por puntuación
+
+    # Seleccionar los mejores rcl_size vecinos
+    rcl = vecinos_puntuados[:rcl_size]
+
+    # Retornar solo los vecinos (sin las puntuaciones)
+    return [vecino[0] for vecino in rcl]
+
+def grasp_select_random_neighbor(rcl):
+    """
+    Selecciona un vecino al azar de la RCL.
+    """
+    return random.choice(rcl)
+
+
+######### GRASP #########
+def grasp(array_trabajadores_disponibles, rcl_size=3):
+    """
+    Implementa el algoritmo GRASP para encontrar la mejor solución de la distribución de trabajadores.
+    """
+
+    # Solución inicial
+    bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestGlobalValue = funcionObjetivo(bestGlobalSolution)
+    print("Solución inicial:", bestGlobalSolution)
+    print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))
+
+    finalizado = False
+
+    while_i = 0
+    while not finalizado:
+        while_i += 1 
+        # Generar los vecinos de la solución actual
+        vecinos = generarVecinos(bestGlobalSolution)
+
+        # Calcular la puntuación de los vecinos
+        puntuaciones_vecinos = [funcionObjetivo(vecino) for vecino in vecinos]
+
+        # Generar la Lista Restringida de Candidatos (RCL)
+        rcl = grasp_generate_rcl(vecinos, puntuaciones_vecinos, rcl_size)
+
+        # Si no hay vecinos en la RCL, se termina la búsqueda
+        if not rcl:
+            break
+
+        # Seleccionar un vecino al azar de la RCL
+        selected_neighbor = grasp_select_random_neighbor(rcl)
+
+        # Evaluar la solución seleccionada
+        selected_value = funcionObjetivo(selected_neighbor)
+
+        # Actualizar la mejor solución global si la solución seleccionada es mejor
+        if selected_value > bestGlobalValue:
+            bestGlobalSolution = selected_neighbor
+            bestGlobalValue = selected_value
+        else:
+            # Si no se mejora la solución global, terminar la búsqueda
+            finalizado = True
+            print(f"Ha entrado en el while {while_i} veces")
+
+    return bestGlobalSolution, round(bestGlobalValue, 2)
+
+######### VND #########
+def vnd(array_trabajadores_disponibles):
+    """
+    Implementa el algoritmo Variable Neighborhood Descent (VND) para encontrar la mejor solución.
+
+    :param array_trabajadores_disponibles: Lista de trabajadores disponibles.
+    :return: La mejor solución encontrada y su puntuación.
+    """
+    # vecindarios: Lista de funciones que generan vecinos para diferentes vecindarios.
+    # Definir las funciones de vecindarios como una lista
+    vecindarios = [
+        generarVecinos,  # Vecindario 1
+        generarVecinosNiveles,  # Vecindario 2
+    ]
+
+    # Solución inicial
+    bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestGlobalValue = funcionObjetivo(bestGlobalSolution)
+
+    # print("Solución inicial:", bestGlobalSolution)
+    # print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))
+
+    k = 0  # Índice del vecindario actual
+
+    while k < len(vecindarios):
+        # Generar los vecinos usando el vecindario k
+        vecinos = vecindarios[k](bestGlobalSolution)
+
+        # Calcular la puntuación de los vecinos
+        puntuaciones_vecinos = [funcionObjetivo(vecino) for vecino in vecinos]
+
+        # Encontrar el mejor vecino en este vecindario
+        if vecinos:
+            bestNeighborIndex = puntuaciones_vecinos.index(max(puntuaciones_vecinos))
+            bestNeighbor = vecinos[bestNeighborIndex]
+            bestNeighborValue = puntuaciones_vecinos[bestNeighborIndex]
+
+            # Si el mejor vecino mejora la solución actual
+            if bestNeighborValue > bestGlobalValue:
+                bestGlobalSolution = bestNeighbor
+                bestGlobalValue = bestNeighborValue
+                # print(f"Vecindario {k}: Se encontró una mejor solución. Puntuación: {round(bestGlobalValue, 2)}")
+                # Volver al primer vecindario
+                k = 0
+            else:
+                # Pasar al siguiente vecindario
+                k += 1
+        else:
+            # Si no hay vecinos, pasar al siguiente vecindario
+            k += 1
+
     return bestGlobalSolution, round(bestGlobalValue, 2)

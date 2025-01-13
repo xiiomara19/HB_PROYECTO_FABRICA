@@ -1,8 +1,4 @@
-import readTables
-import GRASP
-import HillClimbingTabu
 import main
-import VND
 import table
 
 ######### DATOS INICIALES #########
@@ -115,7 +111,7 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = GRASP.grasp(array_trabajadores_disponibles)
+        solution, value = main.grasp(array_trabajadores_disponibles)
         print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
     
     elif numprueba == 7:
@@ -125,7 +121,7 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = HillClimbingTabu.randomHillClimbingTabu(array_trabajadores_disponibles)
+        solution, value = main.randomHillClimbingTabu(array_trabajadores_disponibles)
         print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
     
     elif numprueba == 8:
@@ -135,7 +131,7 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = VND.vnd(array_trabajadores_disponibles)
+        solution, value = main.vnd(array_trabajadores_disponibles)
         print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
     
 
