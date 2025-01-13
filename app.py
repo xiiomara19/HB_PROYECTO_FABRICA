@@ -4,9 +4,10 @@ import main
 import VND
 
 def main_program(array_trabajadores_disponibles):
-    
+
     # Obtener los valores asignados por el equipo
     array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
+
 
     print("--------------------- GREEDY HILL CLIMBING ---------------------")
     # Hill Climbing devuelve la mejor solución de la distribución de trabajadores

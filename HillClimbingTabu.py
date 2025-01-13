@@ -1,5 +1,6 @@
 import main
 
+
 ######### HILL CLIMBING + TABU #########
 def randomHillClimbingTabu(array_trabajadores_disponibles, tabu_list_size = 10):
     """

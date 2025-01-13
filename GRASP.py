@@ -1,6 +1,7 @@
 import random  # Necesario para la selección aleatoria
 import main
 
+
 ######### RCL #########
 
 def grasp_generate_rcl(vecinos, puntuaciones_vecinos, rcl_size=3):
