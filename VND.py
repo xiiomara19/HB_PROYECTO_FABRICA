@@ -20,8 +20,8 @@ def vnd(array_trabajadores_disponibles):
     bestGlobalSolution = main.repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
     bestGlobalValue = main.funcionObjetivo(bestGlobalSolution)
 
-    print("Solución inicial:", bestGlobalSolution)
-    print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))
+    # print("Solución inicial:", bestGlobalSolution)
+    # print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))
 
     k = 0  # Índice del vecindario actual
 
@@ -42,7 +42,7 @@ def vnd(array_trabajadores_disponibles):
             if bestNeighborValue > bestGlobalValue:
                 bestGlobalSolution = bestNeighbor
                 bestGlobalValue = bestNeighborValue
-                print(f"Vecindario {k}: Se encontró una mejor solución. Puntuación: {round(bestGlobalValue, 2)}")
+                # print(f"Vecindario {k}: Se encontró una mejor solución. Puntuación: {round(bestGlobalValue, 2)}")
                 # Volver al primer vecindario
                 k = 0
             else:
