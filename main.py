@@ -107,7 +107,27 @@ def asignacionIni(grupo, trabajadores):
             #segundo parentesis all: si no queda ningun trabajador que pueda ocupar un puesto => parar
             parada = all(elem in sol for elem in puestos_que_se_pueden_completar) or all(len(posibles_candidatos[i])==1 for i in range(len(posibles_candidatos)))
 
+    sol = bestFirst(puestos_y_trabajadores_ordenados, grupo, sol)
+
     return sol
+
+#TODO: revisar
+def funcionObjetivoAsignacionIni(sol, grupo):
+    val = 0
+    for trabajador in range(len(sol)):
+        puesto=sol[trabajador]
+        #por cada puesto activo, se suma la prioridad del trabajador en la máquina y un plus si pertenece al grupo
+        if puesto != -1:
+            prioridad_trabajador_en_maquina = matriz_Prioridades[trabajador][puesto]
+            pertenece_a_grupo = array_id_trabajadores[trabajador] in trabajadores_por_equipo[grupo]
+            #asignar trabajadores que pertenecen al grupo es más importante, por eso se le da más peso
+            #pero el peso que se le añade no puede ser superior a la prioridad del trabajador en la máquina
+            if pertenece_a_grupo:
+                val +=( 1/prioridad_trabajador_en_maquina) + 0.1
+            else:
+                val += 1/(prioridad_trabajador_en_maquina)
+
+    return val
 
 def generarCombinaciones(puestos_y_trabajadores):
     combs=[]
@@ -118,14 +138,14 @@ def generarCombinaciones(puestos_y_trabajadores):
 
     return combs
 
-def bestFirst(puestos_y_trabajadores, lista_puestos_ppal, sol):
+def bestFirst(puestos_y_trabajadores, grupo, sol):
     #asumimos que la primera solucion es la mejor
-    val_mejor_sol = funcionObjetiboAsignacionIni(sol,puestos_y_trabajadores)
+    val_mejor_sol = funcionObjetiboAsignacionIni(sol,grupo)
     mejor_sol = sol.copy()
     val_sol = float('-inf')
     solucion = []
     #generamos todas las combinaciones de trabajadores y puestos posibles
-    combinaciones = generarCombinanciones(puestos_y_trabajadores)
+    combinaciones = generarCombinanciones(puestos_y_trabajadores, grupo)
     #combinaciones es una lista de tuplas con esta estructura: (puesto, [id_trabajadores])
     for comb in combinaciones:
         solucion = asignar(comb)
