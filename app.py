@@ -48,14 +48,14 @@ if __name__ == "__main__":
     # Solicitar al usuario el equipo al que pertenece su equipo con control de errores
     intentos = 0
     while intentos < 4:
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, E): ").strip().upper()
         # Verificar si el equipo ingresado es válido
-        if equipo_usuario in ['A', 'B', 'C', 'D', 'E']:
+        if equipo_usuario in ['A', 'B', 'C', 'E']:
             main_program(equipo_usuario)
             #Salir del while
             break
         else:
-            print("Error: Entrada inválida. Por favor, ingrese uno de los equipos válidos: A, B, C, D, E.")
+            print("Error: Entrada inválida. Por favor, ingrese uno de los equipos válidos: A, B, C, E.")
             intentos += 1
 
     if intentos == 4:

@@ -75,7 +75,7 @@ def main_program(numprueba):
         # Solicitar al usuario que especifique el equipo que va a trabajar.
         # El equipo debe ser una letra válida entre A, B, C, D o E. 
         # Cualquier otro valor se considera inválido.
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, E): ").strip().upper()
 
         # Filtrar los trabajadores disponibles según el equipo especificado.
         # Esta función asigna -1 a los trabajadores que no pertenecen al equipo seleccionado.
@@ -97,7 +97,7 @@ def main_program(numprueba):
     elif numprueba == 5:
         """PRUEBAS HILL CLIMBING"""
         print("---------------------------------------PRUEBAS HILL CLIMBING---------------------------------------")
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
@@ -110,7 +110,7 @@ def main_program(numprueba):
     elif numprueba == 6:
         """PRUEBAS GRASP"""
         print("---------------------------------------PRUEBAS GRASP---------------------------------------")
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
@@ -123,7 +123,7 @@ def main_program(numprueba):
     elif numprueba == 7:
         """PRUEBAS randomHillClimbingTabu"""
         print("---------------------------------------PRUEBAS RANDOM HILL CLIMBING CON TABU SEARCH---------------------------------------")
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
@@ -136,7 +136,7 @@ def main_program(numprueba):
     elif numprueba == 8:
         """PRUEBAS VND"""
         print("---------------------------------------PRUEBAS VND---------------------------------------")
-        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, D, E): ").strip().upper()
+        equipo_usuario = input("Introduce el equipo de tu preferencia (A, B, C, E): ").strip().upper()
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
