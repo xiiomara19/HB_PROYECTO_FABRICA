@@ -67,6 +67,11 @@ def asignacionIni(grupo, trabajadores):
     #asignamos los puestos secundarios
     asignacionIniPuestosSec(trabajadores, sol1)
 
+    #los trabajadores que no se hayan podido asignar a ningun puesto secundario iran como refuerzos
+    for ind in range(dataTable.cantidad_trabajadores):
+        if trabajadores[ind] and sol1[ind]==-1:
+            refuerzos.append(ind)
+
     #despues de asignar los puestos principales y secundarios,
     #comprobamos si para todos los puestos principales, su puesto de ayudante está asignado
     #si el puesto de ayudante no está asignado, es decir, no hay trabajadores que puedan ocupar ese puesto,
