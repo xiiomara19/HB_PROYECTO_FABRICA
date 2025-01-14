@@ -1,5 +1,7 @@
 import table
 import random
+from openpyxl import Workbook
+import os
 
 ######### DATOS INICIALES #########
 # Ruta del archivo de Excel
@@ -7,6 +9,80 @@ archivo = 'DATOS turnos HB compartir.xlsm'
 
 #Crear instancia de la clase Table
 dataTable = table.Table(archivo)
+
+
+######### LECTURA DE RESULTADO #########
+def printResultado(title, equipo_usuario, solution, value):
+
+    print(title + ": La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value, "\n")
+    
+    id_trabajadores = dataTable.array_id_trabajadores
+    id_puestos = dataTable.array_puestos_de_trabajo
+
+    resultado = ""
+    for i in range(len(id_trabajadores)):
+        if solution[i] != -1:
+            puesto = id_puestos[solution[i]]
+            resultado += "El trabajdor con id " + str(id_trabajadores[i]) + " deberá ir al puesto " + puesto + "\n"
+
+    print(resultado)
+
+######### CREACIÓN DE TABLA CON RESULTADO #########
+def getEquipoPorTrabajador(trabajador_id, equipos):
+    # Encuentra el equipo al que pertenece el trabajador
+    for equipo, trabajadores in equipos.items():
+        if trabajador_id in trabajadores:
+            return equipo
+    return "Desconocido"  # Si no se encuentra el equipo
+
+def exportResultadoToExcel(title, equipo_usuario, solution, value, output_filename):
+    """
+    Exports the best worker distribution result to an xlsm file with teams.
+    
+    :param title: The title of the distribution result.
+    :param equipo_usuario: The team for which the result was calculated.
+    :param solution: The solution array with assignments.
+    :param value: The value of the solution.
+    :param output_filename: The name of the xlsm file to save results to.
+    """
+    id_trabajadores = dataTable.array_id_trabajadores
+    id_puestos = dataTable.array_puestos_de_trabajo
+    equipos = dataTable.trabajadores_por_equipo
+
+    # Ensure the folder 'Resultados' exists
+    output_folder = "Resultados"
+    os.makedirs(output_folder, exist_ok=True)
+    full_path = os.path.join(output_folder, output_filename)
+
+    # Create workbook and sheet
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Resultado"
+
+    # Add headers
+    sheet["A1"] = "ID Trabajador"
+    sheet["B1"] = "Puesto"
+    sheet["C1"] = "Equipo"
+
+    # Fill rows with results
+    for i in range(len(id_trabajadores)):
+        trabajador_id = id_trabajadores[i]
+        puesto = id_puestos[solution[i]] if solution[i] != -1 else "-"
+        equipo = getEquipoPorTrabajador(trabajador_id, equipos)
+        sheet.append([trabajador_id, puesto, equipo])
+
+    # Add metadata
+    metadata_sheet = workbook.create_sheet("Metadata")
+    metadata_sheet["A1"] = "Title"
+    metadata_sheet["B1"] = "Equipo Usuario"
+    metadata_sheet["C1"] = "Valor"
+    metadata_sheet["A2"] = title
+    metadata_sheet["B2"] = equipo_usuario
+    metadata_sheet["C2"] = value
+
+    # Save the workbook
+    workbook.save(full_path)
+    print(f"Resultado escritos en la tabla {full_path}")
 
 ######### ASIGNACIÓN INICIAL #########
 # Implementar una primera función que asigne trabajadores con mayor experiencia 
