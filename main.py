@@ -9,7 +9,6 @@ archivo = 'DATOS turnos HB compartir.xlsm'
 # Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
 (trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
 
-#TODO: revisar asignacion TL
 #TODO: hacer que la aplicacion pare si no hay team leader
 def asignarTL(grupo, trabajadores, sol):
     for ind in range(cantidad_trabajadores):
@@ -19,7 +18,7 @@ def asignarTL(grupo, trabajadores, sol):
             print("TL = ", ind)
             break
     
-    print("ERROR: no hay team leader para el turno")
+    #print("ERROR: no hay team leader para el turno")
 
 def trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo):
     puestos_y_trabajadores=[[p] for p in lista_puestos_ppal]
