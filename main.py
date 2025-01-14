@@ -10,10 +10,9 @@ dataTable = table.Table(archivo)
 
 def asignarTL(grupo, trabajadores, sol):
     for ind in range(dataTable.cantidad_trabajadores):
-        print(ind)
         if trabajadores[ind] and dataTable.matriz_Prioridades[ind][10]==1 and dataTable.array_id_trabajadores[ind] in dataTable.trabajadores_por_equipo[grupo]:
             sol[ind]=10
-            print("TL = ", ind)
+            #print("TL = ", ind)
             return True
     
     print("ERROR: no hay team leader para el turno")
@@ -82,8 +81,9 @@ def asignacionIni(grupo, trabajadores):
                     sol1[i]=-1
                     refuerzos.append(i)
     #como ahora ese trabajador está sin asignar, vamos a meterle de refuerzo en un puesto secundario
+    print("refuerzos: ", refuerzos)
     asignacionRefuerzos(refuerzos, sol1)
-
+    
    # print("=====================================")
    # print("solucion inicial: ", sol1)
     return sol1
@@ -94,13 +94,16 @@ def asignacionRefuerzos(trabajadores, sol):
     #vamos a asignar al trabajador en el primer puesto secundario de prioridad prio 
     puetos_a_reforzar = [11,13,15]
     for prio in range(1,10):
+        #print("prioridad: ", prio)
         for tr in trabajadores:
             for puesto in puetos_a_reforzar:
-                    if dataTable.array_id_trabajadores[puesto]==prio: 
-                        if puesto == 11 and sol.count(11)<2 and dataTable.matriz_ILUO[tr][11]>0:
+                    if dataTable.array_Maq_Prio[puesto]==prio: 
+                        if puesto == 11 and sol.count(11)<=1 and dataTable.matriz_ILUO[tr][11]>0:
                             sol[tr]=11
+                         #   print(tr, "a 11")
                         elif puesto != 11 and dataTable.matriz_ILUO[tr][puesto]>0:
                             sol[tr]=puesto
+                           # print(tr, "a ", puesto) 
 
     #* el puesto 11 es distinto a los demas porque no tiene un puesto principal y otro de ayudante con indices distintos
     #ambos son el numero 11, por eso, como maximo puede haber dos personas en ese puesto
@@ -326,7 +329,7 @@ def funcionObjetivo(possibleSolution):
 
             # Para cada trabajador (j representa el trabajadores dentro del puesto i)
             for index_trab_de_i in trabajadores_en_puesto_i:
-                                
+                
                 prioridad_trabajador = dataTable.matriz_Prioridades[index_trab_de_i][i]
 
                 # Añadir a la puntuación de la máquina con el inverso de las prioridades
@@ -680,7 +683,6 @@ def vnd(array_trabajadores_disponibles, grupo):
         generarVecinos,  # Vecindario 1
         generarVecinosNiveles,  # Vecindario 2
     ]
-
     # Solución inicial
         #asignacion anterior
     #bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
