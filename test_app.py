@@ -101,9 +101,12 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = main.greedyHillClimbing(array_trabajadores_disponibles)
-        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
-    
+        solution, value = main.greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario)
+        if solution is None or  value is None:
+            print("No se encontró una solución con el equipo", equipo_usuario)
+        else:
+            print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+
     elif numprueba == 6:
         """PRUEBAS GRASP"""
         print("---------------------------------------PRUEBAS GRASP---------------------------------------")
@@ -112,7 +115,10 @@ def main_program(numprueba):
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
         solution, value = main.grasp(array_trabajadores_disponibles)
-        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+        if solution is None or  value is None:
+            print("No se encontró una solución con el equipo", equipo_usuario)
+        else:
+            print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
     
     elif numprueba == 7:
         """PRUEBAS randomHillClimbingTabu"""
@@ -122,7 +128,10 @@ def main_program(numprueba):
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
         solution, value = main.randomHillClimbingTabu(array_trabajadores_disponibles)
-        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+        if solution is None or  value is None:
+            print("No se encontró una solución con el equipo", equipo_usuario)
+        else:
+            print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
     
     elif numprueba == 8:
         """PRUEBAS VND"""
@@ -132,7 +141,10 @@ def main_program(numprueba):
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
         solution, value = main.vnd(array_trabajadores_disponibles)
-        print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
+        if solution is None or  value is None:
+            print("No se encontró una solución con el equipo", equipo_usuario)
+        else:
+            print("La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value)
     
 
 
