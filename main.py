@@ -81,7 +81,7 @@ def asignacionIni(grupo, trabajadores):
                     sol1[i]=-1
                     refuerzos.append(i)
     #como ahora ese trabajador está sin asignar, vamos a meterle de refuerzo en un puesto secundario
-    print("refuerzos: ", refuerzos)
+   # print("refuerzos: ", refuerzos)
     asignacionRefuerzos(refuerzos, sol1)
     
    # print("=====================================")
@@ -209,7 +209,7 @@ def asignacionIniPuestosSec(trabajadores, sol):
                     #asignamos el puesto secundario
                     sol[tr]=puesto
                     break
-    print("solucion con asignacion de puestos secundarios: ", sol)
+   # print("solucion con asignacion de puestos secundarios: ", sol)
 
 
 
