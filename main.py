@@ -9,9 +9,17 @@ archivo = 'DATOS turnos HB compartir.xlsm'
 # Estas variables incluyen información sobre los trabajadores, los puestos disponibles, y matrices que definen prioridades y niveles de experiencia (ILUO).
 (trabajadores_por_equipo, array_id_trabajadores, cantidad_trabajadores, array_puestos_de_trabajo, cantidad_puestos, matriz_ILUO, matriz_Prioridades, array_Maq_Prio, array_OP_Maq) = readTables.getTablesInfo(archivo)
 
-
+#TODO: revisar asignacion TL
+#TODO: hacer que la aplicacion pare si no hay team leader
 def asignarTL(grupo, trabajadores, sol):
+    for ind in range(cantidad_trabajadores):
+        print(ind)
+        if trabajadores[ind] and matriz_Prioridades[ind][10]==1 and array_id_trabajadores[ind] in trabajadores_por_equipo[grupo]:
+            sol[ind]=10
+            print("TL = ", ind)
+            break
     
+    print("ERROR: no hay team leader para el turno")
 
 def trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo):
     puestos_y_trabajadores=[[p] for p in lista_puestos_ppal]
@@ -34,10 +42,11 @@ def trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo):
     #devuelve los trabajadores en el orden en el que salen en la matriz del excel, por eso luego hay que ordenarlos por prioridad
     return puestos_y_trabajadores
 
-def eliminarTrabajadorDeSublistas(lista, trabajador):
-    for sublista in lista:
-        if trabajador in sublista[0]:
-            sublista.remove(trabajador)
+def eliminarTrabajadorDeSublistas(lista, id_trabajador):
+   # print("lista antes de eliminar tranabajador: ", id_trabajador, " : ", lista)
+    for sublista in lista:    
+        sublista[1:] = [tr for tr in sublista[1:] if tr[0] != id_trabajador]
+   # print("lista despues de eliminar tranabajador: ", lista)
 
 
 ######### ASIGNACIÓN INICIAL #########
@@ -45,24 +54,78 @@ def eliminarTrabajadorDeSublistas(lista, trabajador):
 # (niveles 3 y 4 en la matriz ILUO) a los puestos prioritarios. 
 # Los trabajadores restantes serán distribuidos usando un enfoque como el hill climbing.
 
+
 def asignacionIni(grupo, trabajadores):
+    puestos_ppal=[0,2,4,6,8,12,14]
+    refuerzos=[]
+    sol1 = [-1 for i in range(cantidad_trabajadores)]
+
+    asignarTL(grupo, trabajadores, sol1)
+    #asignamos los puestos principales
+    asignacionIniPuestosPpal(grupo, trabajadores, sol1)
+    #asignamos los puestos secundarios
+    asignacionIniPuestosSec(trabajadores, sol1)
+
+    #despues de asignar los puestos principales y secundarios,
+    #comprobamos si para todos los puestos principales, su puesto de ayudante está asignado
+    #si el puesto de ayudante no está asignado, es decir, no hay trabajadores que puedan ocupar ese puesto,
+    #tenemos que desasignar el puesto principal
+
+    for puesto in puestos_ppal:
+        if puesto not in sol1:
+            for i in range(len(sol1)):
+                if sol1[i]==puesto:
+                    sol1[i]=-1
+                    refuerzos.append(i)
+    #como ahora ese trabajador está sin asignar, vamos a meterle de refuerzo en un puesto secundario
+    asignacionRefuerzos(refuerzos, sol1)
+
+    print("=====================================")
+   # print("solucion inicial: ", sol1)
+    return sol1
+
+def asignacionRefuerzos(trabajadores, sol):
+    #los puestos secundaios que se pueden reforzar son:
+    # 11(solo puede haber una persona de refuerzo)*, 13 o 15
+    #vamos a asignar al trabajador en el primer puesto secundario de prioridad prio 
+    puetos_a_reforzar = [11,13,15]
+    for prio in range(1,10):
+        for tr in trabajadores:
+            for puesto in puetos_a_reforzar:
+                    if array_id_trabajadores[puesto]==prio: 
+                        if puesto == 11 and sol.count(11)<2 and matriz_ILUO[tr][11]>0:
+                            sol[tr]=11
+                        elif puesto != 11 and matriz_ILUO[tr][puesto]>0:
+                            sol[tr]=puesto
+
+    #* el puesto 11 es distinto a los demas porque no tiene un puesto principal y otro de ayudante con indices distintos
+    #ambos son el numero 11, por eso, como maximo puede haber dos personas en ese puesto
+
+
+def asignacionIniPuestosPpal(grupo, trabajadores, sol):
     puestos_principales = [0,2,4,6,8,11,12,14] #el puesto de TL no se tiene en cuenta porque es un caso especial
     posibles_candidatos = []
-    trabajadores_asignados=[]
-    puestos_que_se_pueden_completar=[]
-    sol = [-1] * cantidad_trabajadores
-    asignarTL(grupo, trabajadores, sol)
     
-    for prio in range(1,9):
+    for prio in range(1,10):
+      #  print("__________________________________")
+       # print("prioridad: ", prio)
+
         parada = False
         #lista de los puestos principales con prioridad "prio"
         lista_puestos_ppal = [puesto for puesto in range(len(array_Maq_Prio)) if array_Maq_Prio[puesto]==prio and puesto in puestos_principales]
+        if not lista_puestos_ppal:
+            break
         posibles_candidatos=[[p] for p in lista_puestos_ppal]
+        puestos_que_se_pueden_completar=[]
+
+        #puestos_y_trabajadores es una lista de listas, donde cada sublista tiene el puesto y los trabajadores posibles para ese puesto
+        puestos_y_trabajadores = trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo)
+      #  print("puestos y trabajadores: ", puestos_y_trabajadores)
+
         for ind, puesto in enumerate(lista_puestos_ppal):   
-            #puestos_y_trabajadores es una lista de listas, donde cada sublista tiene el puesto y los trabajadores posibles para ese puesto
-            puestos_y_trabajadores = trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo)
             #el bucle ordena los posibles trabajadores por prioridad
-            for pri in range(1,3):
+            for pri in range(1,4):
+             #   print("prioridad del 1 al 3: ", pri)
                 #primero metemos en posibles_candidatos el indice del trabajador con prioridad "pri" y que pertenecen al grupo 
                 candidato=[sub for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==True]
                 #para evitar añadir listas vacias
@@ -72,47 +135,77 @@ def asignacionIni(grupo, trabajadores):
                 candidato=[sub for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==False]
                 if candidato:
                     posibles_candidatos[ind].extend(candidato)
-
+              #  print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
             #si hay alguien que pueda cubrir el puesto, lo añadimos a puestos_que_se_pueden_completar
             if len(posibles_candidatos[ind])>1:
                 puestos_que_se_pueden_completar.append(puesto)
-        puestos_y_trabajadores_ordenados = posibles_candidatos.copy()
+      #  print("puestos que se pueden completar: ", puestos_que_se_pueden_completar)
+       # print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
         #vamos a generar una primera solucion para el best first
+     #   print("===========ASIGNACION DE PUESTOS================")
         while not parada:
             for ind, puesto in enumerate(puestos_que_se_pueden_completar):
-                #hay que tener en cuenta que en la primera posicion de cada sublista está el puesto, 
-                #por lo que hay que contar los elementos a partir del segundo ([1:])
-                #si solo hay un trabajador que pueda ocupar el puesto, lo asignamos directamente
-                if len(posibles_candidatos[ind][1:])==1 and puesto not in sol:
-                    id_trabajador = posibles_candidatos[ind][1][0]
-                    sol[id_trabajador]=puesto
-                    trabajadores_asignados.append(id_trabajador)
-                    #y lo eliminamos de los los demás puestos en los que podría estar
-                    eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
-           
-            for ind, puesto in enumerate(lista_puestos_ppal) and puesto not in sol:       
-                #si hay más de uno elegimos el primero
-                if len(posibles_candidatos[ind][1:])>1:
-                    id_trabajador = posibles_candidatos[ind][1][0]
-                    sol[id_trabajador]=puesto
-                    trabajadores_asignados.append(id_trabajador)
-                    eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
+                #si existe al menos un trabajador que pueda ocupar el puesto (posibles_candidatos[ind] va a tener siempre al menos un elemento -> el numero del puesto)
+                if len(posibles_candidatos[ind])>1:
+                    #hay que tener en cuenta que en la primera posicion de cada sublista está el puesto, 
+                    #por lo que hay que contar los elementos a partir del segundo ([1:])
+                    #si solo hay un trabajador que pueda ocupar el puesto, lo asignamos directamente
+                    if len(posibles_candidatos[ind][1:])==1 and puesto not in sol:
+                        id_trabajador = posibles_candidatos[ind][1][0]
+                        if sol[id_trabajador]==-1:
+                            sol[id_trabajador]=puesto
+                            #trabajadores_asignados.append(id_trabajador)
+                        #y lo eliminamos de los los demás puestos en los que podría estar
+                        eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
+                        #eliminamos el trabajador si lo acabamos de asignar o si ya ha sido asignado antes,
+                        #por eso estáfuera del if
+                   #     print("solucion parcial: ", sol)
+
+            for ind, puesto in enumerate(puestos_que_se_pueden_completar):   
+                if len(posibles_candidatos[ind])>1:    
+                    #si hay más de uno elegimos el primero
+                    if len(posibles_candidatos[ind][1:])>1 and puesto not in sol:
+                        id_trabajador = posibles_candidatos[ind][1][0]
+                        if sol[id_trabajador]==-1:    
+                            sol[id_trabajador]=puesto
+                        #trabajadores_asignados.append(id_trabajador)
+                        eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
+                   #     print("solucion parcial: ", sol)
 
                 #es necesario dividirlo en dos 'if' por si se da un caso igual a este:
                 # en el puesto 0 pueden estar los trabajadores 4 y 5 y en el puesto 2 solo puede estar el trabajador 4
                 # lo más optimo sería que el trabajador 4 estuviera en el puesto 2 y el trabajador 5 en el puesto 0
                 #hay que dividirlo en dos bucles para que primero asigne todos los puestos a los que solo puede ir un trabajador
-
+       #     print("solucion parcial: ", sol)
+       #     print("")
+        #    print("posibles: ", posibles_candidatos)
+         #   print("")
             #primer parentesis all: si todos los puesto que se podian completar aparecen en la solucion => parar
             #segundo parentesis all: si no queda ningun trabajador que pueda ocupar un puesto => parar
             parada = all(elem in sol for elem in puestos_que_se_pueden_completar) or all(len(posibles_candidatos[i])==1 for i in range(len(posibles_candidatos)))
 
-    sol = bestFirst(puestos_y_trabajadores_ordenados, grupo, sol)
-
+   # sol = bestFirst(puestos_y_trabajadores_ordenados, grupo, sol)
+    print("solucion", sol)
     return sol
 
+def asignacionIniPuestosSec(trabajadores, sol):
+    puestos_sec=[1,3,5,7,9,13,15]
+
+    for tr in range(cantidad_trabajadores):
+        if trabajadores[tr] and sol[tr]==-1:
+            for puesto in puestos_sec:
+                #si el trabajador puede ocupar ese puesto (ILUO>0),
+                #el puesto principal de la maquina esta ocupado,
+                #el trabajador no esta ya en un puesto
+                #y el puesto secundario esta sin asignar
+                if matriz_ILUO[tr][puesto]>0 and puesto-1 in sol and puesto not in sol:
+                    #asignamos el puesto secundario
+                    sol[tr]=puesto
+                    break
+    print("solucion con asignacion de puestos secundarios: ", sol)
+
 #TODO: revisar
-def funcionObjetivoAsignacionIni(sol, grupo):
+def funcionObjetiboAsignacionIni(sol, grupo):
     val = 0
     for trabajador in range(len(sol)):
         puesto=sol[trabajador]
@@ -129,14 +222,22 @@ def funcionObjetivoAsignacionIni(sol, grupo):
 
     return val
 
+#TODO: crear funcion generarCombinaciones
 def generarCombinaciones(puestos_y_trabajadores):
     combs=[]
     for i in range(len(puestos_y_trabajadores)):
         puesto = puestos_y_trabajadores[i][0]
-        for j in puestos_y_trabajadores[i][1:]:
+       # for j in puestos_y_trabajadores[i][1:]:
             
 
     return combs
+
+#TODO: crear funcion asignar
+def asignar(comb):
+    sol=[]
+
+    return sol
+    
 
 def bestFirst(puestos_y_trabajadores, grupo, sol):
     #asumimos que la primera solucion es la mejor
@@ -214,7 +315,7 @@ def repartoTrabajadoresExperimentados(array_trabajadores_disponibles):
 def asignar_valores_por_equipo(equipo_usuario):
     valida = False
     while not valida:
-        respuesta = input("¿Hay alguna falta en el equipo? (si/no)").strip()
+        respuesta = input("¿Hay alguna falta en el equipo? (si/no) ").strip()
         if respuesta.lower() == "si":
             faltas = input("Escribe el identificador de los trabajadores que no han asistido separados por comas: ")
             faltas = [int(falta.strip()) for falta in faltas.split(",")]
@@ -229,7 +330,7 @@ def asignar_valores_por_equipo(equipo_usuario):
     
     valida = False
     while not valida:
-        respuesta = input("¿Ha estrado al turno algún trabajador que no pertenezca al grupo? (si/no)").strip()
+        respuesta = input("¿Ha entrado al turno algún trabajador que no pertenezca al grupo? (si/no) ").strip()
         if respuesta.lower() == "si":
             extras = input("Escribe el identificador de los trabajadores que no han asistido separados por comas: ")
             extras = [int(extra.strip()) for extra in extras.split(",")]
@@ -347,7 +448,7 @@ def generarVecinos(solucion):
     Genera los vecinos de la solución.
     """
 
-    puestos_no_fijos=[1,3,5,7,9,11,13,15]
+    puestos_no_fijos=[1,3,5,7,9,13,15]
     lista_vecinos=[]
     subvecinos=set()
     plantilla = solucion.copy()
@@ -383,8 +484,8 @@ def greedyHillClimbing(array_trabajadores_disponibles, equipo):
     """
 
     #Solución inicial
-    bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
-    #bestLocalSolution = asignacionIni(equipo, array_trabajadores_disponibles)
+    #bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+    bestLocalSolution = asignacionIni(equipo, array_trabajadores_disponibles)
     bestGlobalSolution = bestLocalSolution
     print("Solución inicial:", bestLocalSolution)
 
