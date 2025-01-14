@@ -60,7 +60,7 @@ class Table:
         else:
             print(self.array_OP_Maq)
         
-    def asignar_valores_por_equipo(self, equipo_usuario):
+    def asignar_valores_por_equipo(self, equipo_usuario, faltas, extras):
         """
         Crear un resultado local
         """
@@ -68,6 +68,10 @@ class Table:
         array_trabajadores_disponibles = [False] * self.cantidad_trabajadores 
 
         trabajadores_equipo_usuario = self.trabajadores_por_equipo[equipo_usuario]
+        for falta in faltas:
+            trabajadores_equipo_usuario.remove(falta)
+        for extra in extras:
+            trabajadores_equipo_usuario.append(extra)
 
         for index, id_trabajador in enumerate(self.array_id_trabajadores):
             if id_trabajador in trabajadores_equipo_usuario:
