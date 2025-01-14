@@ -8,8 +8,6 @@ archivo = 'DATOS turnos HB compartir.xlsm'
 #Crear instancia de la clase Table
 dataTable = table.Table(archivo)
 
-#TODO: revisar asignacion TL
-#TODO: hacer que la aplicacion pare si no hay team leader
 def asignarTL(grupo, trabajadores, sol):
     for ind in range(dataTable.cantidad_trabajadores):
         print(ind)
@@ -210,57 +208,7 @@ def asignacionIniPuestosSec(trabajadores, sol):
                     break
     print("solucion con asignacion de puestos secundarios: ", sol)
 
-#TODO: revisar
-def funcionObjetiboAsignacionIni(sol, grupo):
-    val = 0
-    for trabajador in range(len(sol)):
-        puesto=sol[trabajador]
-        #por cada puesto activo, se suma la prioridad del trabajador en la máquina y un plus si pertenece al grupo
-        if puesto != -1:
-            prioridad_trabajador_en_maquina = dataTable.matriz_Prioridades[trabajador][puesto]
-            pertenece_a_grupo = dataTable.array_id_trabajadores[trabajador] in dataTable.trabajadores_por_equipo[grupo]
-            #asignar trabajadores que pertenecen al grupo es más importante, por eso se le da más peso
-            #pero el peso que se le añade no puede ser superior a la prioridad del trabajador en la máquina
-            if pertenece_a_grupo:
-                val +=( 1/prioridad_trabajador_en_maquina) + 0.1
-            else:
-                val += 1/(prioridad_trabajador_en_maquina)
 
-    return val
-
-#TODO: crear funcion generarCombinaciones
-def generarCombinaciones(puestos_y_trabajadores):
-    combs=[]
-    for i in range(len(puestos_y_trabajadores)):
-        puesto = puestos_y_trabajadores[i][0]
-       # for j in puestos_y_trabajadores[i][1:]:
-            
-
-    return combs
-
-#TODO: crear funcion asignar
-def asignar(comb):
-    sol=[]
-
-    return sol
-    
-
-def bestFirst(puestos_y_trabajadores, grupo, sol):
-    #asumimos que la primera solucion es la mejor
-    val_mejor_sol = funcionObjetiboAsignacionIni(sol,grupo)
-    mejor_sol = sol.copy()
-    val_sol = float('-inf')
-    solucion = []
-    #generamos todas las combinaciones de trabajadores y puestos posibles
-    combinaciones = dataTable.generarCombinanciones(puestos_y_trabajadores, grupo)
-    #combinaciones es una lista de tuplas con esta estructura: (puesto, [id_trabajadores])
-    for comb in combinaciones:
-        solucion = asignar(comb)
-        val_sol = funcionObjetiboAsignacionIni(solucion,puestos_y_trabajadores)
-        if val_sol > val_mejor_sol:
-            return solucion
-
-    return mejor_sol
 
     
 def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimiento, possibleSolution, cantidad_trabajadores, cantidad_puestos,array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO):
