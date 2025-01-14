@@ -79,7 +79,7 @@ def asignacionIni(grupo, trabajadores):
     #como ahora ese trabajador está sin asignar, vamos a meterle de refuerzo en un puesto secundario
     asignacionRefuerzos(refuerzos, sol1)
 
-    print("=====================================")
+   # print("=====================================")
    # print("solucion inicial: ", sol1)
     return sol1
 
