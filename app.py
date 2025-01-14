@@ -14,18 +14,18 @@ def main_program(array_trabajadores_disponibles):
     print("--------------------- Greedy randomized adaptive search procedure (GRASP) ---------------------------")
     # GRASP devuelve la mejor solución de la distribución de trabajadores
     rcl_size = 3  # Entre cuantos mejores vecinos hacer random choice el GRASP
-    solution, value = main.grasp(array_trabajadores_disponibles, rcl_size)
+    solution, value = main.grasp(equipo_usuario, array_trabajadores_disponibles, rcl_size)
     print("GRASP: La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value, "\n")
 
     print("--------------------- RANDOM HILL CLIMBING + TABU LIST ---------------------")
     # Hill Climbing con Tabu List devuelve la mejor solución de la distribución de trabajadores
     tabu_list_size = 10
-    solution, value = main.randomHillClimbingTabu(array_trabajadores_disponibles, tabu_list_size)
+    solution, value = main.randomHillClimbingTabu(equipo_usuario, array_trabajadores_disponibles, tabu_list_size)
     print("RANDOM HILL CLIMBING + TABU LIST: \n La mejor distribución de trabajadores del equipo", equipo_usuario, "sería: ", solution, '\n con un valor de:', value, "\n")
 
     print("--------------------- Variable Neighborhood Descent (VND) ---------------------")
     # VND devuelve la mejor solución de la distribución de trabajadores
-    solution, value = main.vnd(array_trabajadores_disponibles)
+    solution, value = main.vnd(array_trabajadores_disponibles, equipo_usuario)
     print("VND: La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value, "\n")
 
     # # Hill Climbing con Tabu List devuelve la mejor solución de la distribución de trabajadores

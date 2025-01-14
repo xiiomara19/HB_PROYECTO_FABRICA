@@ -531,7 +531,9 @@ def greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario):
     """
 
     #Solución inicial
+        #asignacion anterior
     #bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion actual
     bestLocalSolution = asignacionIni(equipo_usuario, array_trabajadores_disponibles)
     bestGlobalSolution = bestLocalSolution
     print("Solución inicial:", bestLocalSolution)
@@ -570,13 +572,16 @@ def greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario):
 
 
 ######### HILL CLIMBING + TABU #########
-def randomHillClimbingTabu(array_trabajadores_disponibles, tabu_list_size = 10):
+def randomHillClimbingTabu(grupo, array_trabajadores_disponibles, tabu_list_size = 10):
     """
     Implementa el algoritmo Hill Climbing para encontrar la mejor solución de la distribución de trabajadores usando la estrategia Random.
     """
 
     #Solución inicial
-    bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion anterior
+    #bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion actual
+    bestLocalSolution = asignacionIni(grupo, array_trabajadores_disponibles)
     bestGlobalSolution = bestLocalSolution
     print("Solución inicial:", bestLocalSolution)
 
@@ -653,13 +658,16 @@ def grasp_select_random_neighbor(rcl):
 
 
 ######### GRASP #########
-def grasp(array_trabajadores_disponibles, rcl_size=3):
+def grasp(grupo, array_trabajadores_disponibles, rcl_size=3):
     """
     Implementa el algoritmo GRASP para encontrar la mejor solución de la distribución de trabajadores.
     """
 
     # Solución inicial
-    bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion anterior
+    #bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion actual
+    bestGlobalSolution = asignacionIni(grupo, array_trabajadores_disponibles)
     bestGlobalValue = funcionObjetivo(bestGlobalSolution)
     print("Solución inicial:", bestGlobalSolution)
     print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))
@@ -700,7 +708,7 @@ def grasp(array_trabajadores_disponibles, rcl_size=3):
     return bestGlobalSolution, round(bestGlobalValue, 2)
 
 ######### VND #########
-def vnd(array_trabajadores_disponibles):
+def vnd(array_trabajadores_disponibles, grupo):
     """
     Implementa el algoritmo Variable Neighborhood Descent (VND) para encontrar la mejor solución.
 
@@ -715,7 +723,10 @@ def vnd(array_trabajadores_disponibles):
     ]
 
     # Solución inicial
-    bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion anterior
+    #bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
+        #asignacion actual
+    bestGlobalSolution = asignacionIni(grupo, array_trabajadores_disponibles)
     bestGlobalValue = funcionObjetivo(bestGlobalSolution)
 
     # print("Solución inicial:", bestGlobalSolution)
