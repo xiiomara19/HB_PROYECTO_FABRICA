@@ -114,7 +114,7 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = main.grasp(array_trabajadores_disponibles)
+        solution, value = main.grasp(equipo_usuario, array_trabajadores_disponibles)
         if solution is None or  value is None:
             print("No se encontró una solución con el equipo", equipo_usuario)
         else:
@@ -127,7 +127,7 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = main.randomHillClimbingTabu(array_trabajadores_disponibles)
+        solution, value = main.randomHillClimbingTabu(equipo_usuario, array_trabajadores_disponibles)
         if solution is None or  value is None:
             print("No se encontró una solución con el equipo", equipo_usuario)
         else:
@@ -140,7 +140,7 @@ def main_program(numprueba):
         array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
         # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
-        solution, value = main.vnd(array_trabajadores_disponibles)
+        solution, value = main.vnd(array_trabajadores_disponibles, equipo_usuario)
         if solution is None or  value is None:
             print("No se encontró una solución con el equipo", equipo_usuario)
         else:

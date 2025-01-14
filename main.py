@@ -667,7 +667,7 @@ def grasp_select_random_neighbor(rcl):
 
 
 ######### GRASP #########
-def grasp(grupo, array_trabajadores_disponibles, rcl_size=3):
+def grasp(grupo, array_trabajadores_disponibles):
     """
     Implementa el algoritmo GRASP para encontrar la mejor solución de la distribución de trabajadores.
     """
@@ -695,7 +695,7 @@ def grasp(grupo, array_trabajadores_disponibles, rcl_size=3):
         puntuaciones_vecinos = [funcionObjetivo(vecino) for vecino in vecinos]
 
         # Generar la Lista Restringida de Candidatos (RCL)
-        rcl = grasp_generate_rcl(vecinos, puntuaciones_vecinos, rcl_size)
+        rcl = grasp_generate_rcl(vecinos, puntuaciones_vecinos)
 
         # Si no hay vecinos en la RCL, se termina la búsqueda
         if not rcl:
