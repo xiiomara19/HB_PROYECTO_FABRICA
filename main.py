@@ -214,7 +214,7 @@ def asignacionIniPuestosSec(trabajadores, sol):
 
 
     
-def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimiento, possibleSolution, cantidad_trabajadores, cantidad_puestos,array_trabajadores_disponibles, matriz_Prioridades, matriz_ILUO):
+def repartoTrabajadoresExperimentadosPrioridadConocimiento(prioridad, conocimiento, possibleSolution, array_trabajadores_disponibles):
     """
     Asigna a los trabajadores con mayor conocimiento (ILUO 4 y 3) a los puestos principales.
     La asignación se realiza considerando las prioridades definidas en la matriz_Prioridades.
