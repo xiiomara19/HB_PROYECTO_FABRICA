@@ -16,9 +16,10 @@ def asignarTL(grupo, trabajadores, sol):
         if trabajadores[ind] and dataTable.matriz_Prioridades[ind][10]==1 and dataTable.array_id_trabajadores[ind] in dataTable.trabajadores_por_equipo[grupo]:
             sol[ind]=10
             print("TL = ", ind)
-            break
+            return True
     
     print("ERROR: no hay team leader para el turno")
+    return False
 
 def trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo):
     puestos_y_trabajadores=[[p] for p in lista_puestos_ppal]
@@ -59,7 +60,8 @@ def asignacionIni(grupo, trabajadores):
     refuerzos=[]
     sol1 = [-1 for i in range(dataTable.cantidad_trabajadores)]
 
-    asignarTL(grupo, trabajadores, sol1)
+    if not asignarTL(grupo, trabajadores, sol1):
+        return False
     #asignamos los puestos principales
     asignacionIniPuestosPpal(grupo, trabajadores, sol1)
     #asignamos los puestos secundarios
@@ -531,10 +533,9 @@ def greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario):
     """
 
     #Solución inicial
-        #asignacion anterior
-    #bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
-        #asignacion actual
     bestLocalSolution = asignacionIni(equipo_usuario, array_trabajadores_disponibles)
+    if not bestLocalSolution:
+        return None, None
     bestGlobalSolution = bestLocalSolution
     print("Solución inicial:", bestLocalSolution)
 
@@ -555,6 +556,7 @@ def greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario):
             for vecino in vecinos:
                 puntuaciones_vecinos.append(funcionObjetivo(vecino))
 
+            print("Puntuaciones de los vecinos:", puntuaciones_vecinos)
             #Encontrar la mejor solución entre los vecinos
             bestLocalValue = max(puntuaciones_vecinos)
             bestLocalSolution = vecinos[puntuaciones_vecinos.index(bestLocalValue)]
@@ -582,6 +584,8 @@ def randomHillClimbingTabu(grupo, array_trabajadores_disponibles, tabu_list_size
     #bestLocalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
         #asignacion actual
     bestLocalSolution = asignacionIni(grupo, array_trabajadores_disponibles)
+    if not bestLocalSolution:
+        return None, None
     bestGlobalSolution = bestLocalSolution
     print("Solución inicial:", bestLocalSolution)
 
@@ -668,6 +672,8 @@ def grasp(grupo, array_trabajadores_disponibles, rcl_size=3):
     #bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
         #asignacion actual
     bestGlobalSolution = asignacionIni(grupo, array_trabajadores_disponibles)
+    if not bestGlobalSolution:
+        return None, None
     bestGlobalValue = funcionObjetivo(bestGlobalSolution)
     print("Solución inicial:", bestGlobalSolution)
     print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))
@@ -727,6 +733,8 @@ def vnd(array_trabajadores_disponibles, grupo):
     #bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
         #asignacion actual
     bestGlobalSolution = asignacionIni(grupo, array_trabajadores_disponibles)
+    if not bestGlobalSolution:
+        return None, None
     bestGlobalValue = funcionObjetivo(bestGlobalSolution)
 
     # print("Solución inicial:", bestGlobalSolution)
