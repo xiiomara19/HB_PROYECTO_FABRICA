@@ -677,12 +677,7 @@ def vnd(array_trabajadores_disponibles, grupo):
     :param array_trabajadores_disponibles: Lista de trabajadores disponibles.
     :return: La mejor solución encontrada y su puntuación.
     """
-    # vecindarios: Lista de funciones que generan vecinos para diferentes vecindarios.
-    # Definir las funciones de vecindarios como una lista
-    vecindarios = [
-        generarVecinos,  # Vecindario 1
-        generarVecinosNiveles,  # Vecindario 2
-    ]
+
     # Solución inicial
         #asignacion anterior
     #bestGlobalSolution = repartoTrabajadoresExperimentados(array_trabajadores_disponibles)
@@ -691,6 +686,15 @@ def vnd(array_trabajadores_disponibles, grupo):
     if not bestGlobalSolution:
         return None, None
     bestGlobalValue = funcionObjetivo(bestGlobalSolution)
+
+
+    # vecindarios: Lista de funciones que generan vecinos para diferentes vecindarios.
+    # Definir las funciones de vecindarios como una lista
+    vecindarios = [
+        generarVecinos,  # Vecindario 1
+        generarVecinosNiveles,  # Vecindario 2
+    ]
+    
 
     # print("Solución inicial:", bestGlobalSolution)
     # print("Puntuación de la solución inicial:", round(bestGlobalValue, 2))

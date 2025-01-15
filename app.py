@@ -9,7 +9,7 @@ def crearGraficosTiempos(tiempos, funciones, equipo_usuario):
     plt.xlabel("Funciones")
     plt.ylabel("Tiempo (s)")
     plt.grid(True)
-    plt.title("Comparecion tiempo de ejecución. Equipo " + equipo_usuario)
+    plt.title("Comparación tiempo de ejecución. Equipo " + equipo_usuario)
     plt.show()
 
 def crearGraficosResultados(resultados, funciones, equipo_usuario):
@@ -19,12 +19,12 @@ def crearGraficosResultados(resultados, funciones, equipo_usuario):
     plt.ylim(0,max(resultados)+1.1)
     plt.yticks(np.arange(0, max(resultados)+1.1, 0.5))
     plt.grid(True)
-    plt.title("Comparacion de resultados. Equipo " + equipo_usuario)
+    plt.title("Comparación de resultados. Equipo " + equipo_usuario)
     plt.show()
 
 def main_program(array_trabajadores_disponibles):
-
-    iter=30
+    #valor de iter con el que se han hecho los graficos: 30
+    iter=1 #pongo uno para no tener que borrar lo sñadido para conseguir las medias para los graficos
     resultados=[]
     tiempos=[]
     funciones=["greedy hill-climbing","grasp","random hill-climbing + tabu","vnd"]
@@ -121,8 +121,8 @@ def main_program(array_trabajadores_disponibles):
     resultados.append(mr)
     tiempos.append(media)
 
-    crearGraficosTiempos(tiempos, funciones, equipo_usuario)
-    crearGraficosResultados(resultados, funciones, equipo_usuario)
+   # crearGraficosTiempos(tiempos, funciones, equipo_usuario)
+   # crearGraficosResultados(resultados, funciones, equipo_usuario)
 
     # # Hill Climbing con Tabu List devuelve la mejor solución de la distribución de trabajadores
     # solution, value = HillClimbingTabu.greedyHillClimbingTabu(array_trabajadores_disponibles)
