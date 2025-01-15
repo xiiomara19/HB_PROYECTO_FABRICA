@@ -14,7 +14,7 @@ def asignarTL(grupo, trabajadores, sol):
     for ind in range(dataTable.cantidad_trabajadores):
         if trabajadores[ind] and dataTable.matriz_Prioridades[ind][10]==1 and dataTable.array_id_trabajadores[ind] in dataTable.trabajadores_por_equipo[grupo]:
             sol[ind]=10
-            print("TL = ", ind)
+            # print("TL = ", ind)
             return True
     
     print("ERROR: no hay team leader para el turno")
@@ -189,8 +189,8 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
     posibles_candidatos = []
     
     for prio in range(1,10):
-        print("__________________________________")
-        print("prioridad: ", prio)
+        # print("__________________________________")
+        # print("prioridad: ", prio)
 
         parada = False
         #lista de los puestos principales con prioridad "prio"
@@ -202,12 +202,12 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
 
         #puestos_y_trabajadores es una lista de listas, donde cada sublista tiene el puesto y los trabajadores posibles para ese puesto
         puestos_y_trabajadores = trabajadoresPosibles(lista_puestos_ppal, trabajadores, grupo)
-        print("puestos y trabajadores: ", puestos_y_trabajadores)
+        # print("puestos y trabajadores: ", puestos_y_trabajadores)
 
         for ind, puesto in enumerate(lista_puestos_ppal):   
             #el bucle ordena los posibles trabajadores por prioridad
             for pri in range(1,4):
-                print("prioridad del 1 al 3: ", pri)
+                # print("prioridad del 1 al 3: ", pri)
                 #primero metemos en posibles_candidatos el indice del trabajador con prioridad "pri" y que pertenecen al grupo 
                 candidato=[sub for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==True]
                 #para evitar añadir listas vacias
@@ -217,13 +217,13 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
                 candidato=[sub for sub in puestos_y_trabajadores[ind][1] if sub[1]==pri and sub[2]==False]
                 if candidato:
                     posibles_candidatos[ind].extend(candidato)
-                print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
+                # print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
             #si hay alguien que pueda cubrir el puesto, lo añadimos a puestos_que_se_pueden_completar
             if len(posibles_candidatos[ind])>1:
                 puestos_que_se_pueden_completar.append(puesto)
-        print("puestos que se pueden completar: ", puestos_que_se_pueden_completar)
-        print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
-        print("===========ASIGNACION DE PUESTOS================")
+        # print("puestos que se pueden completar: ", puestos_que_se_pueden_completar)
+        # print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
+        # print("===========ASIGNACION DE PUESTOS================")
         while not parada:
             for ind, puesto in enumerate(puestos_que_se_pueden_completar):
                 #si existe al menos un trabajador que pueda ocupar el puesto (posibles_candidatos[ind] va a tener siempre al menos un elemento -> el numero del puesto)
@@ -239,7 +239,7 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
                         eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
                         #eliminamos el trabajador si lo acabamos de asignar o si ya ha sido asignado antes,
                         #por eso estáfuera del if
-                        print("solucion parcial: ", sol)
+                        # print("solucion parcial: ", sol)
 
             for ind, puesto in enumerate(puestos_que_se_pueden_completar):   
                 if len(posibles_candidatos[ind])>1:    
@@ -249,7 +249,7 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
                         if sol[id_trabajador]==-1:    
                             sol[id_trabajador]=puesto
                         eliminarTrabajadorDeSublistas(posibles_candidatos, id_trabajador)
-                        print("solucion parcial: ", sol)
+                        # print("solucion parcial: ", sol)
 
                 #es necesario dividirlo en dos 'if' por si se da un caso igual a este:
                 # en el puesto 0 pueden estar los trabajadores 4 y 5 y en el puesto 2 solo puede estar el trabajador 4
@@ -266,12 +266,12 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
                 puesto = posibles_candidatos[ind][0]
                 if puesto not in sol and len(posibles_candidatos[ind])==1:
                     puestos_que_se_pueden_completar.remove(puesto)
-                    print("puesto eliminado: ", puesto)
+                    # print("puesto eliminado: ", puesto)
 
             parada = all(elem in sol for elem in puestos_que_se_pueden_completar) or all(len(posibles_candidatos[i])==1 for i in range(len(posibles_candidatos)))
 
    # sol = bestFirst(puestos_y_trabajadores_ordenados, grupo, sol)
-    print("solucion", sol)
+    # print("solucion", sol)
     return sol
 
 def asignacionIniPuestosSec(trabajadores, sol):
