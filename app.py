@@ -31,11 +31,12 @@ def main_program(array_trabajadores_disponibles):
     # Obtener los valores asignados por el equipo
     array_trabajadores_disponibles = main.asignar_valores_por_equipo(equipo_usuario)
 
-
     print("--------------------- GREEDY HILL CLIMBING ---------------------")
     # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
     t=[]
     r=[]
+    title = "GREEDY HILL CLIMBING"
+    output_filename = title + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario)
@@ -45,7 +46,8 @@ def main_program(array_trabajadores_disponibles):
             print("No se encontró una solución con el equipo", equipo_usuario)
             r.append(0)
         else:
-            print("GREEDY HILL CLIMBING: La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value, "\n")
+            main.printResultado(title, equipo_usuario, solution, value)
+            main.exportResultadoToExcel(title, equipo_usuario, solution, value, output_filename)
             r.append(value)
     media = statistics.mean(t)
     if not all(elem==0 for elem in r):
@@ -58,6 +60,8 @@ def main_program(array_trabajadores_disponibles):
     # GRASP devuelve la mejor solución de la distribución de trabajadores
     t=[]
     r=[]
+    title = "GRASP"
+    output_filename = title + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.grasp(equipo_usuario, array_trabajadores_disponibles)
@@ -67,7 +71,8 @@ def main_program(array_trabajadores_disponibles):
             print("No se encontró una solución con el equipo", equipo_usuario)
             r.append(0)
         else:
-            print("GRASP: La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value, "\n")
+            main.printResultado(title, equipo_usuario, solution, value)
+            main.exportResultadoToExcel(title, equipo_usuario, solution, value, output_filename)
             r.append(value)
     media = statistics.mean(t)
     if not all(elem==0 for elem in r):
@@ -80,6 +85,8 @@ def main_program(array_trabajadores_disponibles):
     # Hill Climbing con Tabu List devuelve la mejor solución de la distribución de trabajadores
     t=[]
     r=[]
+    title = "RANDOM HILL CLIMBING + TABU LIST"
+    output_filename = title + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.randomHillClimbingTabu(equipo_usuario, array_trabajadores_disponibles)
@@ -89,7 +96,8 @@ def main_program(array_trabajadores_disponibles):
             print("No se encontró una solución con el equipo", equipo_usuario)
             r.append(0)
         else:
-            print("RANDOM HILL CLIMBING + TABU LIST: \n La mejor distribución de trabajadores del equipo", equipo_usuario, "sería: ", solution, '\n con un valor de:', value, "\n")
+            main.printResultado(title, equipo_usuario, solution, value)
+            main.exportResultadoToExcel(title, equipo_usuario, solution, value, output_filename)
             r.append(value)
 
     media = statistics.mean(t)
@@ -103,6 +111,8 @@ def main_program(array_trabajadores_disponibles):
     # VND devuelve la mejor solución de la distribución de trabajadores
     t=[]
     r=[]
+    title = "VND"
+    output_filename = title + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.vnd(array_trabajadores_disponibles, equipo_usuario)
@@ -112,7 +122,8 @@ def main_program(array_trabajadores_disponibles):
             print("No se encontró una solución con el equipo", equipo_usuario)
             r.append(0)
         else:
-            print("VND: La mejor distribución de trabajadores del equipo", equipo_usuario, "sería:\n", solution, '\ncon un valor de:', value, "\n")
+            main.printResultado(title, equipo_usuario, solution, value)
+            main.exportResultadoToExcel(title, equipo_usuario, solution, value, output_filename)
             r.append(value)
     media = statistics.mean(t)
     if not all(elem==0 for elem in r):
