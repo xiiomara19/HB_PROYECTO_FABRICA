@@ -353,9 +353,17 @@ def asignar_valores_por_equipo(equipo_usuario):
     while not valida:
         respuesta = input("¿Hay alguna falta en el equipo? (si/no) ").strip()
         if respuesta.lower() == "si":
-            faltas = input("Escribe el identificador de los trabajadores que no han asistido separados por comas: ")
-            faltas = [int(falta.strip()) for falta in faltas.split(",")]
-            valida = True
+            try:
+                faltas = input("Escribe el identificador de los trabajadores que no han asistido separados por comas: ")
+                faltas = [int(falta.strip()) for falta in faltas.split(",")]
+                valida = True
+                for falta in faltas:
+                    if falta not in dataTable.trabajadores_por_equipo[equipo_usuario]:
+                        print(f"ATENCIÓN: El id {falta} no está en la lista de trabajadores del equipo {equipo_usuario}, vuelva a intentarlo:")
+                        valida = False
+            except ValueError: 
+                print("¡Entrada no válida! Por favor ingrese enteros.") 
+                valida = False
         
         elif respuesta.lower() == "no" :
             faltas = []
@@ -368,9 +376,17 @@ def asignar_valores_por_equipo(equipo_usuario):
     while not valida:
         respuesta = input("¿Ha entrado al turno algún trabajador que no pertenezca al grupo? (si/no) ").strip()
         if respuesta.lower() == "si":
-            extras = input("Escribe el identificador de los trabajadores que no han asistido separados por comas: ")
-            extras = [int(extra.strip()) for extra in extras.split(",")]
-            valida = True
+            try:
+                extras = input("Escribe el identificador de los trabajadores que no han asistido separados por comas: ")
+                extras = [int(extra.strip()) for extra in extras.split(",")]
+                valida = True
+                for extra in extras:
+                    if extra not in dataTable.array_id_trabajadores:
+                        print(f"ATENCIÓN: El id {extra} no existe, no se puede añadir. Vuelva a intentarlo.")
+                        valida = False
+            except ValueError: 
+                print("¡Entrada no válida! Por favor ingrese enteros.") 
+                valida = False
         
         elif respuesta.lower() == "no" :
             extras = []

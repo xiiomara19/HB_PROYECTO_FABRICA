@@ -69,9 +69,15 @@ class Table:
 
         trabajadores_equipo_usuario = self.trabajadores_por_equipo[equipo_usuario]
         for falta in faltas:
-            trabajadores_equipo_usuario.remove(falta)
+            if falta in trabajadores_equipo_usuario:
+                trabajadores_equipo_usuario.remove(falta)
+            else:
+                print(f"ATENCIÓN: El id {falta} no está en la lista de trabajadores del equipo {equipo_usuario}.")
         for extra in extras:
-            trabajadores_equipo_usuario.append(extra)
+            if extra in self.array_id_trabajadores:
+                trabajadores_equipo_usuario.append(extra)
+            else:
+                print(f"ATENCIÓN: El id {extra} no existe, no se puede añadir.")
 
         for index, id_trabajador in enumerate(self.array_id_trabajadores):
             if id_trabajador in trabajadores_equipo_usuario:
