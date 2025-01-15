@@ -225,6 +225,7 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
         # print("puestos y sus podibles candidatos ordenados: ", posibles_candidatos)
         # print("===========ASIGNACION DE PUESTOS================")
         while not parada:
+            #hay que dividirlo en dos bucles para que primero asigne todos los puestos a los que solo puede ir un trabajador
             for ind, puesto in enumerate(puestos_que_se_pueden_completar):
                 #si existe al menos un trabajador que pueda ocupar el puesto (posibles_candidatos[ind] va a tener siempre al menos un elemento -> el numero del puesto)
                 if len(posibles_candidatos[ind])>1:
@@ -254,20 +255,20 @@ def asignacionIniPuestosPpal(grupo, trabajadores, sol):
                 #es necesario dividirlo en dos 'if' por si se da un caso igual a este:
                 # en el puesto 0 pueden estar los trabajadores 4 y 5 y en el puesto 2 solo puede estar el trabajador 4
                 # lo más optimo sería que el trabajador 4 estuviera en el puesto 2 y el trabajador 5 en el puesto 0
-                #hay que dividirlo en dos bucles para que primero asigne todos los puestos a los que solo puede ir un trabajador
        #     print("solucion parcial: ", sol)
        #     print("")
         #    print("posibles: ", posibles_candidatos)
          #   print("")
-            #primer parentesis all: si todos los puesto que se podian completar aparecen en la solucion => parar
-            #segundo parentesis all: si no queda ningun trabajador que pueda ocupar un puesto => parar
-
+            
+            #si no hay trabajadores disponibles para un puesto en el que antes si los había, eliminamos el puesto de la lista
             for ind in range(len(posibles_candidatos)):
                 puesto = posibles_candidatos[ind][0]
                 if puesto not in sol and len(posibles_candidatos[ind])==1:
                     puestos_que_se_pueden_completar.remove(puesto)
                     # print("puesto eliminado: ", puesto)
 
+            #primer parentesis all: si todos los puesto que se podian completar aparecen en la solucion => parar
+            #segundo parentesis all: si no queda ningun trabajador que pueda ocupar un puesto => parar
             parada = all(elem in sol for elem in puestos_que_se_pueden_completar) or all(len(posibles_candidatos[i])==1 for i in range(len(posibles_candidatos)))
 
    # sol = bestFirst(puestos_y_trabajadores_ordenados, grupo, sol)
