@@ -35,8 +35,8 @@ def main_program(array_trabajadores_disponibles):
     # Hill Climbing devuelve la mejor solución de la distribución de trabajadores
     t=[]
     r=[]
-    title = "GREEDY HILL CLIMBING"
-    output_filename = title + ".xlsm"
+    title = "GREEDY_HILL_CLIMBING"
+    output_filename = title + "_" + equipo_usuario + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.greedyHillClimbing(array_trabajadores_disponibles, equipo_usuario)
@@ -61,7 +61,7 @@ def main_program(array_trabajadores_disponibles):
     t=[]
     r=[]
     title = "GRASP"
-    output_filename = title + ".xlsm"
+    output_filename = title + "_" + equipo_usuario + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.grasp(equipo_usuario, array_trabajadores_disponibles)
@@ -85,8 +85,8 @@ def main_program(array_trabajadores_disponibles):
     # Hill Climbing con Tabu List devuelve la mejor solución de la distribución de trabajadores
     t=[]
     r=[]
-    title = "RANDOM HILL CLIMBING + TABU LIST"
-    output_filename = title + ".xlsm"
+    title = "RANDOM_HILL_CLIMBING&TABU_LIST"
+    output_filename = title + "_" + equipo_usuario + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.randomHillClimbingTabu(equipo_usuario, array_trabajadores_disponibles)
@@ -112,7 +112,7 @@ def main_program(array_trabajadores_disponibles):
     t=[]
     r=[]
     title = "VND"
-    output_filename = title + ".xlsm"
+    output_filename = title + "_" + equipo_usuario + ".xlsm"
     for i in range(iter):
         inicio = time.perf_counter()
         solution, value = main.vnd(array_trabajadores_disponibles, equipo_usuario)

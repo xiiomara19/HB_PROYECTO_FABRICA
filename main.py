@@ -129,6 +129,7 @@ def exportResultadoToExcel(title, equipo_usuario, solution, value, output_filena
 
 def asignacionIni(grupo, trabajadores):
     puestos_ppal=[0,2,4,6,8,12,14]
+    puestos_sec=[1,3,5,7,9,13,15]
     refuerzos=[]
     sol1 = [-1 for i in range(dataTable.cantidad_trabajadores)]
 
@@ -149,10 +150,10 @@ def asignacionIni(grupo, trabajadores):
     #si el puesto de ayudante no está asignado, es decir, no hay trabajadores que puedan ocupar ese puesto,
     #tenemos que desasignar el puesto principal
 
-    for puesto in puestos_ppal:
+    for puesto in puestos_sec:
         if puesto not in sol1:
             for i in range(len(sol1)):
-                if sol1[i]==puesto:
+                if sol1[i]==puesto-1: #el id del puesto principal de la maquina siempre sera uno menos que el del puesto secundario
                     sol1[i]=-1
                     refuerzos.append(i)
     #como ahora ese trabajador está sin asignar, vamos a meterle de refuerzo en un puesto secundario
